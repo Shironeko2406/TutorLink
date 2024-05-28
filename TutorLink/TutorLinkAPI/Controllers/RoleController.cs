@@ -1,7 +1,7 @@
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
-
+#pragma warning disable
 namespace TutorLinkAPI.Controllers;
 
 [Route("[controller]")]

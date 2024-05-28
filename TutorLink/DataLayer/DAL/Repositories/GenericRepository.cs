@@ -1,12 +1,14 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+#pragma warning disable
 namespace DataLayer.DAL.Repositories;
 
 #region Interface GenericRepository
 
 public interface IGenericRepository<T> where T : class
 {
+    #region Unasync method
     ICollection<T> GetAll();
     ICollection<T> GetList(Expression<Func<T, bool>> expression);
     T Get(Expression<Func<T, bool>> expression);
@@ -18,10 +20,20 @@ public interface IGenericRepository<T> where T : class
     void Remove(T entity);
     void ClearTrackers();
     int SaveChanges();
-    Task SaveChangesAsync();
     void Dispose();
+    #endregion
+    
+    #region Async
     Task<int> CountAsync(Expression<Func<T, bool>> expression = null);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
+    Task<ICollection<T>> GetAllWithAsync();
+    Task<ICollection<T>> GetListWithAsync(Expression<Func<T, bool>> expression);
+    Task<T> GetSingleWithAsync(Expression<Func<T, bool>> expression);
+    Task<EntityEntry<T>> AddSingleWithAsync(T entity);
+    Task AddRangeWithAsync(ICollection<T> entities);
+    Task UpdateWithAsync(T entity);
+    Task SaveChangesAsync();
+    #endregion
 }
 
 #endregion
@@ -37,7 +49,8 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _dbSet = context.Set<T>();
     }
-
+    
+    #region Unasync method
     public virtual ICollection<T> GetAll()
     {
         return _dbSet.ToList();
@@ -68,6 +81,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         _dbSet.Attach(entity);
         _context.Entry(entity).State = EntityState.Modified;
+        _context.SaveChanges();
     }
 
     public virtual void Delete(Guid id)
@@ -110,6 +124,21 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             throw new Exception(ex.Message);
         }
     }
+    
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+    #endregion
+    
+    
+    #region Async Methods
+    public async Task UpdateWithAsync(T entity)
+    {
+        _dbSet.Attach(entity);
+        _context.Entry(entity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+    }
 
     public virtual async Task SaveChangesAsync()
     {
@@ -123,12 +152,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             throw new Exception(ex.Message);
         }
     }
-
-    public void Dispose()
-    {
-        _context.Dispose();
-    }
-
+    
     public IEnumerable<T> GetAllTest()
     {
         return _context.Set<T>().AsNoTracking().ToList();
@@ -148,5 +172,31 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         return await _dbSet.AnyAsync(expression);
     }
+
+    public async Task<ICollection<T>> GetAllWithAsync()
+    {
+        return await _dbSet.ToListAsync();
+    }
+
+    public async Task<ICollection<T>> GetListWithAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _dbSet.Where(expression).ToListAsync();
+    }
+
+    public async Task<T> GetSingleWithAsync(Expression<Func<T, bool>> expression)
+    {
+        return await _dbSet.FirstOrDefaultAsync(expression);
+    }
+
+    public async Task<EntityEntry<T>> AddSingleWithAsync(T entity)
+    {
+        return await _dbSet.AddAsync(entity);
+    }
+
+    public async Task AddRangeWithAsync(ICollection<T> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+    }
+    #endregion
 }
 #endregion
