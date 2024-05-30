@@ -1,6 +1,16 @@
-namespace TutorLinkAPI.BusinessLogics.IServices;
+using System.Collections.Generic;
+using DataLayer.Entities;
 
-public interface IPostRequestService
+namespace TutorLinkAPI.BusinessLogics.IServices
 {
-    
+    public interface IPostRequestService
+    {
+        List<PostRequest> GetAllPostRequests();
+        PostRequest GetPostRequestById(Guid postrequestId);
+        void CreatePostRequest(PostRequest postRequest);
+        void UpdatePostRequest(PostRequest postRequest);
+        void DeletePostRequest(Guid postrequestId);
+    }
+}
+
 }

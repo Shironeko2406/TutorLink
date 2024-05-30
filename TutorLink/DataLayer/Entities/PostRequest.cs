@@ -17,9 +17,6 @@ public class PostRequest
     public virtual ICollection<Apply> Applies { get; set; }
     public virtual ICollection<Appointment> Appointments { get; set; }
     public virtual Account? Account { get; set; }
-    
-    
-    
 }
 
 public enum RequestGender

@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\TutorLink",
+    "\\TutorLink\\DataLayer",
+    "\\TutorLink\\DataLayer\\Entities",
+    "\\TutorLink\\TutorLinkAPI",
+    "\\TutorLink\\TutorLinkAPI\\BusinessLogics",
+    "\\TutorLink\\TutorLinkAPI\\BusinessLogics\\Helper",
+    "\\TutorLink\\TutorLinkAPI\\BusinessLogics\\IServices",
+    "\\TutorLink\\TutorLinkAPI\\BusinessLogics\\Services",
+    "\\TutorLink\\TutorLinkAPI\\Controllers"
+  ],
+  "SelectedNode": "\\TutorLink\\TutorLinkAPI\\BusinessLogics\\IServices\\IAccountService.cs",
+  "PreviewInSolutionExplorer": false
+}
