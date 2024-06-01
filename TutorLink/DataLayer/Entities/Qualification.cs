@@ -10,8 +10,11 @@ public class Qualification
     public string InstitutionName { get; set; }
     public DateTime? YearObtained { get; set; }
     public Guid TutorId { get; set; }
-    
+    public int? SkillId { get; set; } 
+    public int? ProficiencyId { get; set; }
     public virtual Tutor? Tutor { get; set; }
+    public virtual Skill? Skill { get; set; }
+    public virtual Proficiency? Proficiency { get; set; }
 }
 
 public enum Types
