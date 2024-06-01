@@ -19,6 +19,8 @@ public partial class TutorDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Tutor> Tutors { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
+    public DbSet<Skill> Skills { get; set; }
+    public DbSet<Proficiency> Proficiencies { get; set; }
     public DbSet<WalletTransaction> WalletTransactions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -219,6 +221,16 @@ public  partial class TutorDbContext {
                 .WithMany(m => m.Qualifications)
                 .HasForeignKey(f => f.TutorId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(o => o.Skill)
+                .WithMany(m => m.Qualifications)
+                .HasForeignKey(f => f.SkillId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(o => o.Proficiency)
+                .WithMany(m => m.Qualifications)
+                .HasForeignKey(f => f.ProficiencyId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         
         #endregion
@@ -291,11 +303,45 @@ public  partial class TutorDbContext {
                 .HasForeignKey<Wallet>(f => f.TutorId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-        
+
         #endregion
-        
+
+        #region Skill
+        modelBuilder.Entity<Skill>(entity =>
+        {
+            //Configure PK
+            entity.HasKey(a => a.SkillId);
+            entity.Property(p => p.SkillId)
+                  .ValueGeneratedOnAdd();
+
+            //Require fields
+            entity.Property(p => p.SkillName)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            //Foreign key -Nothing
+        });
+        #endregion
+
+        #region Proficiency
+        modelBuilder.Entity<Proficiency>(entity =>
+        {
+            //Configure PK
+            entity.HasKey(a => a.ProficiencyId);
+
+            //Require fields
+            entity.Property(p => p.ProficiencyCode)
+                .HasMaxLength(5)
+                .IsRequired();
+            entity.Property(p => p.Description)
+                .HasMaxLength(100)
+                .IsRequired();
+            //Foreign key -Nothing
+        });
+        #endregion
+
         #region WalletTransaction
-        
+
         modelBuilder.Entity<WalletTransaction>(entity =>
         {
             //Configure PK
@@ -321,7 +367,7 @@ public  partial class TutorDbContext {
         #endregion
 
 
-        #region Data Seeding
+        #region Role Data Seeding
 
         modelBuilder.Entity<Role>().HasData(new Role()
         {
@@ -344,6 +390,85 @@ public  partial class TutorDbContext {
             RoleName = "Parent"
         });
 
+        #endregion
+
+        #region Proficiency Data Seeding
+
+        modelBuilder.Entity<Proficiency>().HasData(new Proficiency()
+        {
+            ProficiencyId = 1,
+            ProficiencyCode= "A1",
+            Description= "Basic level of proficiency"
+        });
+
+        modelBuilder.Entity<Proficiency>().HasData(new Proficiency()
+        {
+            ProficiencyId = 2,
+            ProficiencyCode = "A2",
+            Description = "Elementary level of proficiency"
+        });
+
+        modelBuilder.Entity<Proficiency>().HasData(new Proficiency()
+        {
+            ProficiencyId = 3,
+            ProficiencyCode = "B1",
+            Description = "Intermediate level of proficiency"
+        });
+
+        modelBuilder.Entity<Proficiency>().HasData(new Proficiency()
+        {
+            ProficiencyId = 4,
+            ProficiencyCode = "B2",
+            Description = "Upper Intermediate level of proficiency"
+        });
+
+        modelBuilder.Entity<Proficiency>().HasData(new Proficiency()
+        {
+            ProficiencyId = 5,
+            ProficiencyCode = "C1",
+            Description = "Advanced level of proficiency"
+        });
+
+        modelBuilder.Entity<Proficiency>().HasData(new Proficiency()
+        {
+            ProficiencyId = 6,
+            ProficiencyCode = "C2",
+            Description = "Proficient/native-like level of proficiency"
+        });
+
+        #endregion
+
+        #region Skill Data Seeding
+
+        modelBuilder.Entity<Skill>().HasData(new Skill()
+        {
+            SkillId = 1,
+            SkillName = "English"
+        });
+
+        modelBuilder.Entity<Skill>().HasData(new Skill()
+        {
+            SkillId = 2,
+            SkillName = "Japanese"
+        });
+
+        modelBuilder.Entity<Skill>().HasData(new Skill()
+        {
+            SkillId = 3,
+            SkillName = "Korean"
+        });
+
+        modelBuilder.Entity<Skill>().HasData(new Skill()
+        {
+            SkillId = 4,
+            SkillName = "Chinese"
+        });
+
+        modelBuilder.Entity<Skill>().HasData(new Skill()
+        {
+            SkillId = 5,
+            SkillName = "Spanish"
+        });
         #endregion
     }
 }
