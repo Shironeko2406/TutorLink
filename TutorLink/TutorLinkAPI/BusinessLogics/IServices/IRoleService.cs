@@ -4,8 +4,8 @@ namespace TutorLinkAPI.BusinessLogics.IServices;
 
 public interface IRoleService
 {
-    public List<Role> GetAllRoles();
-    public Role GetRoleById(int id);
-    public Role AddNewRole(Role newRole);
-    public Role UpdateRole(int id, string roleName);
+    List<Role> GetAllRoles();
+    Role GetRoleById(int id);
+    Role AddNewRole(Role newRole);
+    Role UpdateRole(int id, string roleName);
 }

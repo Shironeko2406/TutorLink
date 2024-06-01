@@ -55,6 +55,9 @@ public  partial class TutorDbContext {
             entity.Property(p => p.Phone)
                 .HasMaxLength(12)
                 .IsRequired();
+            entity.Property(p => p.Address)
+                .HasMaxLength(150)
+                .IsRequired();
             entity.Property(p => p.Gender)
                 .IsRequired();
             
@@ -206,11 +209,9 @@ public  partial class TutorDbContext {
             entity.Property(p => p.QualificationType)
                 .IsRequired();
             entity.Property(p => p.QualificationName)
-                .HasMaxLength(255)
-                .IsRequired();
+                .HasMaxLength(255);
             entity.Property(p => p.InstitutionName)
-                .HasMaxLength(125)
-                .IsRequired();
+                .HasMaxLength(125);
             entity.Property(p => p.YearObtained)
                 .IsRequired();
             entity.Property(p => p.TutorId)
@@ -274,6 +275,9 @@ public  partial class TutorDbContext {
                 .IsRequired();
             entity.Property(p => p.Phone)
                 .HasMaxLength(12)
+                .IsRequired();
+            entity.Property(p => p.Address)
+                .HasMaxLength(150)
                 .IsRequired();
             entity.Property(p => p.Gender)
                 .IsRequired();

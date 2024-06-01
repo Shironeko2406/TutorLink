@@ -26,6 +26,8 @@ public interface IGenericRepository<T> where T : class
     #region Async
     Task<int> CountAsync(Expression<Func<T, bool>> expression = null);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
+    Task<T> GetByIdAsync(Guid id);
+    Task<T> GetByIdAsync(int id);
     Task<ICollection<T>> GetAllWithAsync();
     Task<ICollection<T>> GetListWithAsync(Expression<Func<T, bool>> expression);
     Task<T> GetSingleWithAsync(Expression<Func<T, bool>> expression);
@@ -196,6 +198,16 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task AddRangeWithAsync(ICollection<T> entities)
     {
         await _dbSet.AddRangeAsync(entities);
+    }
+
+    public async Task<T> GetByIdAsync(Guid id)
+    {
+        return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<T> GetByIdAsync(int id)
+    {
+        return await _dbSet.FindAsync(id);
     }
     #endregion
 }
