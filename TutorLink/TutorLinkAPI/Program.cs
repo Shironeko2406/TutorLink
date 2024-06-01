@@ -1,3 +1,4 @@
+using AutoMapper;
 using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,8 @@ namespace TutorLinkAPI
 
             // Add services to the container.
             builder.Services.AddControllers();
-            
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -34,6 +36,8 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<QualificationRepository>();
             builder.Services.AddScoped<RoleRepository>();
             builder.Services.AddScoped<TutorRepository>();
+            builder.Services.AddScoped<SkillRepository>();
+            builder.Services.AddScoped<ProficiencyRepository>();
             builder.Services.AddScoped<WalletRepository>();
             builder.Services.AddScoped<WalletTransactionRepository>();
             #endregion
@@ -47,6 +51,8 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<IQualificationService, QualificationServices>();
             builder.Services.AddScoped<IRoleService, RoleServices>();
             builder.Services.AddScoped<ITutorService, TutorServices>();
+            builder.Services.AddScoped<ISkillService, SkillServices>();
+            builder.Services.AddScoped<IProficiencyService, ProficiencyServices>();
             builder.Services.AddScoped<IWalletService, WalletServices>();
             builder.Services.AddScoped<IWalletTransactionService, WalletTransactionServices>();
             #endregion
