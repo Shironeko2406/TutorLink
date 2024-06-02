@@ -58,10 +58,10 @@ public class TutorController : Controller
 
     #region Update Tutor By Id
     [HttpPut]
-    [Route("UpdateTutorById/{id}")]
-    public async Task<IActionResult> UpdateTutorById(Guid id, UpdateTutorViewModel updateTutor)
+    [Route("UpdateTutorById")]
+    public async Task<IActionResult> UpdateTutorById(TutorViewModel updateTutor)
     {
-        var tutor = await _tutorService.UpdateTutorById(id, updateTutor);
+        var tutor = await _tutorService.UpdateTutorById(updateTutor);
         if (tutor == null)
         {
             return BadRequest("Failed to add new tutor.");
