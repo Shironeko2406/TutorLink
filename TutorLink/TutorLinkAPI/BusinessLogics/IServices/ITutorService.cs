@@ -10,5 +10,5 @@ public interface ITutorService
 
     Task<Guid> AddNewTutor(AddTutorViewModel addTutorViewModel);
 
-    Task<TutorViewModel> UpdateTutorById(TutorViewModel tutorViewModel);
+    Task<UpdateTutorViewModel> UpdateTutorById(Guid tutorId, UpdateTutorViewModel tutorViewModel);
 }
