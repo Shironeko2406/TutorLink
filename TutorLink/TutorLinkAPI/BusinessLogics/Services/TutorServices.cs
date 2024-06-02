@@ -23,39 +23,16 @@ public class TutorServices : ITutorService
     #region GetTutorList
     public async Task<List<TutorViewModel>> GetTutorList()
     {
-        //try
-        //{
-        //    var tutorList = await _tutorRepository.GetAllWithIncludeAsync(
-        //        t => true, 
-        //        t => t.Qualifications
-        //    );
-        //    var tutorListViewModel = _mapper.Map<List<TutorViewModel>>(tutorList);
-        //    return tutorListViewModel;
-        //}
-        //catch (Exception ex)
-        //{
-        //    throw new Exception("An error occurred while getting the list of tutors!", ex);
-        //}
         try
         {
-            var tutors = _tutorRepository.GetAll().ToList();
-            var tutorViewModels = _mapper.Map<List<TutorViewModel>>(tutors);
-
-            foreach (var tutorViewModel in tutorViewModels)
-            {
-                var qualifications = _qualificationRepository
-                    .GetAll()
-                    .Where(q => q.TutorId == tutorViewModel.TutorId)
-                    .ToList();
-
-                tutorViewModel.Qualifications = _mapper.Map<List<QualificationViewModel>>(qualifications);
-            }
-
-            return tutorViewModels;
+            var tutorList = await _tutorRepository.GetAllWithAsync();
+            var tutorListViewModel= _mapper.Map<List<TutorViewModel>>(tutorList);
+            return tutorListViewModel;
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred while getting all tutors.", ex);
+
+            throw new Exception("An error while getting the list of tutor!", ex);
         }
     }
     #endregion
@@ -110,24 +87,26 @@ public class TutorServices : ITutorService
     #endregion
 
     #region UpdateTutorById
-    public async Task<UpdateTutorViewModel> UpdateTutorById(Guid tutorId, UpdateTutorViewModel tutorViewModel)
+    public async Task<TutorViewModel> UpdateTutorById(TutorViewModel tutorViewModel)
     {
         try
         {
-            var existingTutor = await _tutorRepository.GetByIdAsync(tutorId);
+            var existingTutor = await _tutorRepository.GetByIdAsync(tutorViewModel.TutorId);
             if (existingTutor != null)
             {
                 _mapper.Map(tutorViewModel, existingTutor);
-
+                if (tutorViewModel.Qualifications != null && tutorViewModel.Qualifications.Any())
+                {
+                    existingTutor.Qualifications = _mapper.Map<List<Qualification>>(tutorViewModel.Qualifications);
+                }
                 await _tutorRepository.UpdateWithAsync(existingTutor);
-                await _tutorRepository.SaveChangesAsync();
-
-                return _mapper.Map<UpdateTutorViewModel>(existingTutor);
+                return _mapper.Map<TutorViewModel>(tutorViewModel);
             }
             throw new Exception("Tutor not found.");
         }
         catch (Exception ex)
         {
+
             throw new Exception("An error occurred while updating the tutor.", ex);
         }
     }
