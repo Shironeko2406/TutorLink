@@ -27,7 +27,7 @@ public class MappingProfile : Profile
             .ForAllOtherMembers(opt => opt.Ignore());
 
         CreateMap<UpdateTutorViewModel, Tutor>()
-            .ForMember(dest => dest.Gender, opt => opt.Ignore())
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom((src, dest) => src.Gender != 0 ? src.Gender : dest.Gender))
             .ForMember(dest => dest.Fullname, opt => opt.Condition(src => src.Fullname != null && src.Fullname != "string"))
             .ForMember(dest => dest.Email, opt => opt.Condition(src => src.Email != null && src.Email != "string"))
             .ForMember(dest => dest.Phone, opt => opt.Condition(src => src.Phone != null && src.Phone != "string"))
