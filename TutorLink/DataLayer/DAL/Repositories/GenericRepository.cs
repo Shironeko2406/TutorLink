@@ -35,6 +35,7 @@ public interface IGenericRepository<T> where T : class
     Task AddRangeWithAsync(ICollection<T> entities);
     Task UpdateWithAsync(T entity);
     Task SaveChangesAsync();
+    Task<ICollection<T>> GetAllWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
     #endregion
 }
 
@@ -208,6 +209,18 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<T> GetByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<ICollection<T>> GetAllWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
+    {
+        IQueryable<T> query = _dbSet;
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+
+        return await query.Where(predicate).ToListAsync();
     }
     #endregion
 }
