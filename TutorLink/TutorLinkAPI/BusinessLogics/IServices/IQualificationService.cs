@@ -6,5 +6,7 @@ public interface IQualificationService
 {
     Task<List<QualificationViewModel>> GetAllQualifications();
 
-    Task<QualificationViewModel> AddNewQualification(QualificationViewModel qualificationViewModel);
+    Task<AddQualificationViewModel> AddNewQualification(Guid tutorId, AddQualificationViewModel qualificationViewModel);
+
+    Task<UpdateQualificationViewModel> UpdateQualification(Guid tutorId, Guid qualificationId, UpdateQualificationViewModel qualificationViewModel);
 }

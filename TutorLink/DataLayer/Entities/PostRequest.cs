@@ -15,7 +15,7 @@ public class PostRequest
     public DateTime CreatedDate { get; set; }
     
     public virtual ICollection<Apply> Applies { get; set; }
-    public virtual ICollection<Appointment> Appointments { get; set; }
+    public virtual ICollection<AppointmentFeedback> AppointmentFeedbacks { get; set; }
     public virtual Account? Account { get; set; }
     
     

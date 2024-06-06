@@ -168,30 +168,30 @@ namespace DataLayer.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    AppointmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ExpiredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AppTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TutorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.AppointmentId);
-                    table.ForeignKey(
-                        name: "FK_Appointments_PostRequests_PostId",
-                        column: x => x.PostId,
-                        principalTable: "PostRequests",
-                        principalColumn: "PostId",
-                        onDelete: ReferentialAction.Restrict);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "Appointments",
+            //    columns: table => new
+            //    {
+            //        AppointmentId = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        ExpiredDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+            //        AppTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+            //        Address = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+            //        Status = table.Column<int>(type: "int", nullable: false),
+            //        ParentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+            //        TutorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+            //        PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_Appointments", x => x.AppointmentId);
+            //        table.ForeignKey(
+            //            name: "FK_Appointments_PostRequests_PostId",
+            //            column: x => x.PostId,
+            //            principalTable: "PostRequests",
+            //            principalColumn: "PostId",
+            //            onDelete: ReferentialAction.Restrict);
+            //    });
 
             migrationBuilder.CreateTable(
                 name: "WalletTransactions",
@@ -214,26 +214,26 @@ namespace DataLayer.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ParentFeedbacks",
-                columns: table => new
-                {
-                    FeedbackId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    IsSucessful = table.Column<bool>(type: "bit", nullable: false),
-                    AppointmentId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParentFeedbacks", x => x.FeedbackId);
-                    table.ForeignKey(
-                        name: "FK_ParentFeedbacks_Appointments_AppointmentId",
-                        column: x => x.AppointmentId,
-                        principalTable: "Appointments",
-                        principalColumn: "AppointmentId",
-                        onDelete: ReferentialAction.Restrict);
-                });
+            //migrationBuilder.CreateTable(
+            //    name: "ParentFeedbacks",
+            //    columns: table => new
+            //    {
+            //        FeedbackId = table.Column<int>(type: "int", nullable: false)
+            //            .Annotation("SqlServer:Identity", "1, 1"),
+            //        Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+            //        IsSucessful = table.Column<bool>(type: "bit", nullable: false),
+            //        AppointmentId = table.Column<int>(type: "int", nullable: false)
+            //    },
+            //    constraints: table =>
+            //    {
+            //        table.PrimaryKey("PK_ParentFeedbacks", x => x.FeedbackId);
+            //        table.ForeignKey(
+            //            name: "FK_ParentFeedbacks_Appointments_AppointmentId",
+            //            column: x => x.AppointmentId,
+            //            principalTable: "Appointments",
+            //            principalColumn: "AppointmentId",
+            //            onDelete: ReferentialAction.Restrict);
+            //    });
 
             migrationBuilder.InsertData(
                 table: "Roles",
@@ -261,15 +261,15 @@ namespace DataLayer.Migrations
                 table: "Applies",
                 column: "TutorId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Appointments_PostId",
-                table: "Appointments",
-                column: "PostId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_Appointments_PostId",
+            //    table: "Appointments",
+            //    column: "PostId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ParentFeedbacks_AppointmentId",
-                table: "ParentFeedbacks",
-                column: "AppointmentId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_ParentFeedbacks_AppointmentId",
+            //    table: "ParentFeedbacks",
+            //    column: "AppointmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PostRequests_CreatedBy",

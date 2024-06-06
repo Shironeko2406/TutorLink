@@ -3,6 +3,7 @@ using DataLayer.DAL.Repositories;
 using DataLayer.Entities;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TutorLinkAPI.BusinessLogics.Services;
 
@@ -41,12 +42,12 @@ public class QualificationServices : IQualificationService
     #endregion
 
     #region AddNewQualification
-    public async Task<QualificationViewModel> AddNewQualification(QualificationViewModel qualificationViewModel)
+    public async Task<AddQualificationViewModel> AddNewQualification(Guid tutorId, AddQualificationViewModel qualificationViewModel)
     {
         try
         {
             var qualification = _mapper.Map<Qualification>(qualificationViewModel);
-
+            qualification.TutorId = tutorId;
             if (qualificationViewModel.QualificationType == Types.Degree)
             {
                 qualificationViewModel.SkillId = null;
@@ -54,13 +55,13 @@ public class QualificationServices : IQualificationService
             }
             else if (qualificationViewModel.QualificationType == Types.Skill)
             {
-                
                 qualificationViewModel.QualificationName = null;
                 qualificationViewModel.InstitutionName = null;
             }
+
             await _qualificationRepository.AddSingleWithAsync(qualification);
             await _qualificationRepository.SaveChangesAsync();
-            var addedQualificationViewModel = _mapper.Map<QualificationViewModel>(qualification);
+            var addedQualificationViewModel = _mapper.Map<AddQualificationViewModel>(qualification);
             return addedQualificationViewModel;
         }
         catch (Exception ex)
@@ -70,4 +71,25 @@ public class QualificationServices : IQualificationService
         }
     }
     #endregion
+
+    public async Task<UpdateQualificationViewModel> UpdateQualification(Guid tutorId, Guid qualificationId, UpdateQualificationViewModel qualificationViewModel)
+    {
+        try
+        {
+            var existingQualification = await _qualificationRepository.GetSingleWithAsync(q => q.TutorId == tutorId && q.QualificationId == qualificationId);
+            if (existingQualification == null)
+            {
+                throw new Exception("Qualification not found for the specified tutor.");
+            }
+            _mapper.Map(qualificationViewModel, existingQualification);
+
+            await _qualificationRepository.UpdateWithAsync(existingQualification);
+            await _qualificationRepository.SaveChangesAsync();          
+            return _mapper.Map<UpdateQualificationViewModel>(existingQualification);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while updating the qualification.", ex);
+        }
+    }
 }

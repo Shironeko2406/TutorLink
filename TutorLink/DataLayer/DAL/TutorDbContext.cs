@@ -12,8 +12,8 @@ public partial class TutorDbContext : DbContext
     
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Apply> Applies { get; set; }
-    public DbSet<Appointment> Appointments { get; set; }
-    public DbSet<ParentFeedback> ParentFeedbacks { get; set; }
+    //public DbSet<Appointment> Appointments { get; set; }
+    //public DbSet<ParentFeedback> ParentFeedbacks { get; set; }
     public DbSet<PostRequest> PostRequests { get; set; }
     public DbSet<Qualification> Qualifications { get; set; }
     public DbSet<Role> Roles { get; set; }
@@ -22,6 +22,8 @@ public partial class TutorDbContext : DbContext
     public DbSet<Skill> Skills { get; set; }
     public DbSet<Proficiency> Proficiencies { get; set; }
     public DbSet<WalletTransaction> WalletTransactions { get; set; }
+    public DbSet<AppointmentFeedback> AppointmentFeedbacks { get; set; }
+    public DbSet<Deposit> Deposits { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -95,64 +97,64 @@ public  partial class TutorDbContext {
                 .HasForeignKey(f => f.TutorId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-        
+
         #endregion
-        
+
         #region Appointment
-        
-        modelBuilder.Entity<Appointment>(entity =>
-        {
-            //Configure PK
-            entity.HasKey(a => a.AppointmentId);
-            
-            //Require fields
-            entity.Property(p => p.ExpiredDate)
-                .IsRequired();
-            entity.Property(p => p.AppTime)
-                .IsRequired();
-            entity.Property(p => p.Address)
-                .HasMaxLength(255)
-                .IsRequired();
-            entity.Property(p => p.Status)
-                .IsRequired();
-            entity.Property(p => p.ParentId)
-                .IsRequired();
-            entity.Property(p => p.TutorId)
-                .IsRequired();
-            entity.Property(p => p.PostId)
-                .IsRequired();
-            
-            //Foreign key
-            entity.HasOne(o => o.PostRequest)
-                .WithMany(m => m.Appointments)
-                .HasForeignKey(f => f.PostId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
-        
+
+        //modelBuilder.Entity<Appointment>(entity =>
+        //{
+        //    //Configure PK
+        //    entity.HasKey(a => a.AppointmentId);
+
+        //    //Require fields
+        //    entity.Property(p => p.ExpiredDate)
+        //        .IsRequired();
+        //    entity.Property(p => p.AppTime)
+        //        .IsRequired();
+        //    entity.Property(p => p.Address)
+        //        .HasMaxLength(255)
+        //        .IsRequired();
+        //    entity.Property(p => p.Status)
+        //        .IsRequired();
+        //    entity.Property(p => p.ParentId)
+        //        .IsRequired();
+        //    entity.Property(p => p.TutorId)
+        //        .IsRequired();
+        //    entity.Property(p => p.PostId)
+        //        .IsRequired();
+
+        //    //Foreign key
+        //    entity.HasOne(o => o.PostRequest)
+        //        .WithMany(m => m.Appointments)
+        //        .HasForeignKey(f => f.PostId)
+        //        .OnDelete(DeleteBehavior.Restrict);
+        //});
+
         #endregion
-        
+
         #region ParentFeedback
 
-        modelBuilder.Entity<ParentFeedback>(entity =>
-        {
-            //Configure PK
-            entity.HasKey(a => a.FeedbackId);
+        //modelBuilder.Entity<ParentFeedback>(entity =>
+        //{
+        //    //Configure PK
+        //    entity.HasKey(a => a.FeedbackId);
 
-            //Require fields
-            entity.Property(p => p.Description)
-                .HasMaxLength(255)
-                .IsRequired();
-            entity.Property(p => p.IsSucessful)
-                .IsRequired();
-            entity.Property(p => p.AppointmentId)
-                .IsRequired();
+        //    //Require fields
+        //    entity.Property(p => p.Description)
+        //        .HasMaxLength(255)
+        //        .IsRequired();
+        //    entity.Property(p => p.IsSucessful)
+        //        .IsRequired();
+        //    entity.Property(p => p.AppointmentId)
+        //        .IsRequired();
 
-            //Foreign key
-            entity.HasOne(o => o.Appointment)
-                .WithMany(m => m.ParentFeedbacks)
-                .HasForeignKey(f => f.AppointmentId)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
+        //    //Foreign key
+        //    entity.HasOne(o => o.Appointment)
+        //        .WithMany(m => m.ParentFeedbacks)
+        //        .HasForeignKey(f => f.AppointmentId)
+        //        .OnDelete(DeleteBehavior.Restrict);
+        //});
 
         #endregion
 
@@ -360,16 +362,72 @@ public  partial class TutorDbContext {
                 .IsRequired();
             entity.Property(p => p.WalletId)
                 .IsRequired();
-            
+
             //Foreign key
             entity.HasOne(o => o.Wallet)
                 .WithMany(m => m.WalletTransactions)
                 .HasForeignKey(f => f.WalletId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(o => o.Deposit)
+                .WithMany(m => m.WalletTransactions)
+                .HasForeignKey(f => f.DepositId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
-        
+
         #endregion
 
+        #region AppointmentFeedback
+
+        modelBuilder.Entity<AppointmentFeedback>(entity =>
+        {
+            //Configure PK
+            entity.HasKey(a => a.AppointmentId);
+
+            //Foreign key
+            entity.HasOne(o => o.Account)
+                .WithMany(m => m.AppointmentFeedbacks)
+                .HasForeignKey(f => f.AccountId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(o => o.Tutor)
+                .WithMany(m => m.AppointmentFeedbacks)
+                .HasForeignKey(f => f.TutorId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            entity.HasOne(o => o.PostRequest)
+                .WithMany(m => m.AppointmentFeedbacks)
+                .HasForeignKey(f => f.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
+        });
+
+        #endregion
+
+        #region Deposit
+
+        modelBuilder.Entity<Deposit>(entity =>
+        {
+            //Configure PK
+            entity.HasKey(a => a.DepositId);
+
+            //Require fields
+            entity.Property(p => p.Amount)
+                .IsRequired();
+            entity.Property(p => p.DepositDate)
+                .IsRequired();
+            entity.Property(p => p.Method)
+                .IsRequired();
+            entity.Property(p => p.WalletId)
+                .IsRequired();
+
+            //Foreign key
+            entity.HasOne(o => o.Wallet)
+                .WithMany(m => m.Deposits)
+                .HasForeignKey(f => f.WalletId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        #endregion
 
         #region Role Data Seeding
 

@@ -32,15 +32,30 @@ public class QualificationController : Controller
     #region Add New Qualification
     [HttpPost]
     [Route("AddNewQualification")]
-    public async Task<IActionResult> AddNewQualification(Guid tutorId, QualificationViewModel qualificationViewModel)
+    public async Task<IActionResult> AddNewQualification(Guid tutorId, AddQualificationViewModel qualificationViewModel)
     {
-        qualificationViewModel.TutorId = tutorId;
-        var newQualification = await _qualificationService.AddNewQualification(qualificationViewModel);
+        var newQualification = await _qualificationService.AddNewQualification(tutorId, qualificationViewModel);
         if (newQualification == null)
         {
             return BadRequest("Failed to add new qualification!");
         }
         return Ok("Add new qualification success!");
+    }
+    #endregion
+
+    #region Update Qualification By TutorId, QualificationId
+    [HttpPut]
+    [Route("UpdateQualification")]
+    public async Task<IActionResult> UpdateQualification([FromHeader] Guid tutorId,
+                                                         [FromHeader] Guid qualificationId,
+                                                         [FromBody] UpdateQualificationViewModel qualificationViewModel)
+    {
+        var updatedQualification = await _qualificationService.UpdateQualification(tutorId, qualificationId, qualificationViewModel);
+        if (updatedQualification == null)
+        {
+            return BadRequest("Failed to add new qualification!");
+        }
+        return Ok("Updated Qualification successfully!");
     }
     #endregion
 }

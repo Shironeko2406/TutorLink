@@ -7,8 +7,10 @@ public class WalletTransaction
     public TransactionTypes Type { get; set; }  
     public DateTime TransactionDate { get; set; }
     public Guid WalletId { get; set; }
+    public Guid? DepositId { get; set; }
     
     public virtual Wallet? Wallet { get; set; }
+    public virtual Deposit? Deposit { get; set; }
 }
 public enum TransactionTypes
 {

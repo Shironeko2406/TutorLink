@@ -13,6 +13,7 @@ public class Account
     public int RoleId { get; set; }
     
     public virtual ICollection<PostRequest>? PostRequests { get; set; }   
+    public virtual ICollection<AppointmentFeedback>? AppointmentFeedbacks { get; set; }
     public virtual Role? Role { get; set; }
 }
 
