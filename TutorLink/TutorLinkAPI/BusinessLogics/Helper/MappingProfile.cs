@@ -38,5 +38,15 @@ public class MappingProfile : Profile
 
         //Qualification
         CreateMap<QualificationViewModel, Qualification>().ReverseMap();
+        CreateMap<AddQualificationViewModel, Qualification>().ReverseMap();
+        CreateMap<UpdateQualificationViewModel, Qualification>()
+            .ForMember(dest => dest.QualificationName, opt => opt.Condition(src => src.QualificationName != null && src.QualificationName != "string"))
+            .ForMember(dest => dest.InstitutionName, opt => opt.Condition(src => src.InstitutionName != null && src.InstitutionName != "string"))
+            .ForMember(dest => dest.YearObtained, opt => opt.MapFrom(src => src.YearObtained))
+            .ForMember(dest => dest.SkillId, opt => opt.Condition(src => src.SkillId != null && src.SkillId != 0))
+            .ForMember(dest => dest.ProficiencyId, opt => opt.Condition(src => src.ProficiencyId != null && src.ProficiencyId != 0))
+            .ReverseMap();
+
+
     }
 }

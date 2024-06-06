@@ -4,6 +4,7 @@ using DataLayer.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(TutorDbContext))]
-    partial class TutorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240605095647_UpdateDB_V4_06052024")]
+    partial class UpdateDB_V4_06052024
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,31 +144,6 @@ namespace DataLayer.Migrations
                     b.ToTable("AppointmentFeedbacks");
                 });
 
-            modelBuilder.Entity("DataLayer.Entities.Deposit", b =>
-                {
-                    b.Property<Guid>("DepositId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<double>("Amount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("DepositDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Method")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("WalletId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("DepositId");
-
-                    b.HasIndex("WalletId");
-
-                    b.ToTable("Deposits");
-                });
-
             modelBuilder.Entity("DataLayer.Entities.PostRequest", b =>
                 {
                     b.Property<Guid>("PostId")
@@ -286,6 +264,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("InstitutionName")
+                        .IsRequired()
                         .HasMaxLength(125)
                         .HasColumnType("nvarchar(125)");
 
@@ -293,6 +272,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("QualificationName")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -483,9 +463,6 @@ namespace DataLayer.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("DepositId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("TransactionDate")
                         .HasColumnType("datetime2");
 
@@ -496,8 +473,6 @@ namespace DataLayer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("TransactionId");
-
-                    b.HasIndex("DepositId");
 
                     b.HasIndex("WalletId");
 
@@ -556,17 +531,6 @@ namespace DataLayer.Migrations
                     b.Navigation("PostRequest");
 
                     b.Navigation("Tutor");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Deposit", b =>
-                {
-                    b.HasOne("DataLayer.Entities.Wallet", "Wallet")
-                        .WithMany("Deposits")
-                        .HasForeignKey("WalletId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.PostRequest", b =>
@@ -629,18 +593,11 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.WalletTransaction", b =>
                 {
-                    b.HasOne("DataLayer.Entities.Deposit", "Deposit")
-                        .WithMany("WalletTransactions")
-                        .HasForeignKey("DepositId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("DataLayer.Entities.Wallet", "Wallet")
                         .WithMany("WalletTransactions")
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Deposit");
 
                     b.Navigation("Wallet");
                 });
@@ -650,11 +607,6 @@ namespace DataLayer.Migrations
                     b.Navigation("AppointmentFeedbacks");
 
                     b.Navigation("PostRequests");
-                });
-
-            modelBuilder.Entity("DataLayer.Entities.Deposit", b =>
-                {
-                    b.Navigation("WalletTransactions");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.PostRequest", b =>
@@ -694,8 +646,6 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Wallet", b =>
                 {
-                    b.Navigation("Deposits");
-
                     b.Navigation("WalletTransactions");
                 });
 #pragma warning restore 612, 618

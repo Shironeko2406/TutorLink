@@ -16,7 +16,8 @@ public class Tutor
     public virtual Wallet? Wallet { get; set; }
     public virtual ICollection<Apply> Applies { get; set; }
     public virtual ICollection<Qualification> Qualifications { get; set; }
-    
+    public virtual ICollection<AppointmentFeedback>? AppointmentFeedbacks { get; set; }
+
 }
 
 public enum TutorGenders
