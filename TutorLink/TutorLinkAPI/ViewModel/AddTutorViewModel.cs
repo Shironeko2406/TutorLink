@@ -4,7 +4,7 @@ namespace TutorLinkAPI.ViewModel
 {
     public class AddTutorViewModel
     {
-        public Guid TutorId { get; set; }
+        //public Guid TutorId { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public string Fullname { get; set; }

@@ -93,6 +93,7 @@ public class TutorServices : ITutorService
         try
         {
             var newTutor = _mapper.Map<Tutor>(addTutorViewModel);
+            newTutor.TutorId= Guid.NewGuid();
             var tutorRole = await _roleRepository.GetSingleWithAsync(r => r.RoleId == 2);
             newTutor.RoleId = tutorRole.RoleId;
 

@@ -15,7 +15,7 @@ public class MappingProfile : Profile
 
 
         CreateMap<AddTutorViewModel, Tutor>()
-            .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
+            //.ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
             .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Username))
             .ForMember(dest => dest.Password, opt => opt.MapFrom(src => src.Password))
             .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.Fullname))
