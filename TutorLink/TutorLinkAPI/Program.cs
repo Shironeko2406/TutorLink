@@ -1,3 +1,4 @@
+using AutoMapper;
 using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -14,18 +15,21 @@ namespace TutorLinkAPI
 
             // Add services to the container.
             builder.Services.AddControllers();
-            
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            // Configure DbContext with connection string from appsettings.json
             builder.Services.AddDbContext<TutorDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
-            });
-            
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("Local"),
+                    sqlOptions => sqlOptions.MigrationsAssembly("DataLayer") // Specify the migrations assembly
+                )
+            );
+
             #region Repositories
-            builder.Services.AddScoped(typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<AccountRepository>();
             builder.Services.AddScoped<ApplyRepository>();
             builder.Services.AddScoped<AppointmentRepository>();
@@ -37,10 +41,10 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<WalletRepository>();
             builder.Services.AddScoped<WalletTransactionRepository>();
             #endregion
-            
+
             #region Interfaces + Services
-            builder.Services.AddScoped<IAccountService, AccountServiceServices>();
-            builder.Services.AddScoped<IApplyService, ApplyServiceServices>();
+            builder.Services.AddScoped<IAccountService, AccountServices>();
+            builder.Services.AddScoped<IApplyService, ApplyServices>();
             builder.Services.AddScoped<IAppointmentService, AppointmentServices>();
             builder.Services.AddScoped<IParentFeedbackService, ParentFeedbackServices>();
             builder.Services.AddScoped<IPostRequestService, PostRequestServices>();
@@ -51,12 +55,15 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<IWalletTransactionService, WalletTransactionServices>();
             #endregion
 
-            //CORS handler
+            // Register AutoMapper
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+            // Configure CORS
             var CORS_CONFIG = "_CORS_CONFIG";
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: CORS_CONFIG,
-                    builder => builder.AllowAnyOrigin()
+                    policy => policy.AllowAnyOrigin()
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
@@ -66,6 +73,7 @@ namespace TutorLinkAPI
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

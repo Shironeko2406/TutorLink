@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataLayer.Entities;
@@ -6,11 +7,11 @@ using TutorLinkAPI.BusinessLogics.IServices;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
-    public class ApplyService : IApplyService
+    public class ApplyServices : IApplyService
     {
-        private readonly IGenericRepository<Apply> _applyRepository;
+        private readonly ApplyRepository _applyRepository;
 
-        public ApplyService(IGenericRepository<Apply> applyRepository)
+        public ApplyServices(ApplyRepository applyRepository)
         {
             _applyRepository = applyRepository;
         }
@@ -21,6 +22,7 @@ namespace TutorLinkAPI.BusinessLogics.Services
 
         public void CreateApply(Apply apply)
         {
+            apply.ApplyId = Guid.NewGuid();
             _applyRepository.Add(apply);
             _applyRepository.SaveChanges();
         }

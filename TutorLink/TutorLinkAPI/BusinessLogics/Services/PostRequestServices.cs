@@ -6,18 +6,18 @@ using TutorLinkAPI.BusinessLogics.IServices;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
-    public class PostRequestService : IPostRequestService
+    public class PostRequestServices : IPostRequestService
     {
-        private readonly IGenericRepository<PostRequest> _postRequestRepository;
+        private readonly PostRequestRepository _postRequestRepository;
 
-        public PostRequestService(IGenericRepository<PostRequest> postRequestRepository)
+        public PostRequestServices(PostRequestRepository postRequestRepository)
         {
             _postRequestRepository = postRequestRepository;
         }
 
         public List<PostRequest> GetAllPostRequests() => _postRequestRepository.GetAll().ToList();
 
-        public PostRequest GetPostRequestById(Guid postrequestId) => _postRequestRepository.Get(pr => pr.PostId == postrequestId);
+        public PostRequest GetPostRequestById(Guid postId) => _postRequestRepository.Get(pr => pr.PostId == postId);
 
         public void CreatePostRequest(PostRequest postRequest)
         {
@@ -31,9 +31,9 @@ namespace TutorLinkAPI.BusinessLogics.Services
             _postRequestRepository.SaveChanges();
         }
 
-        public void DeletePostRequest(Guid postrequestId)
+        public void DeletePostRequest(Guid postId)
         {
-            _postRequestRepository.Delete(postrequestId);
+            _postRequestRepository.Delete(postId);
             _postRequestRepository.SaveChanges();
         }
     }

@@ -6,11 +6,10 @@ using TutorLinkAPI.BusinessLogics.IServices;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
-    public class AccountService : IAccountService
+    public class AccountServices : IAccountService
     {
-        private readonly IGenericRepository<Account> _accountRepository;
-
-        public AccountService(IGenericRepository<Account> accountRepository)
+        private readonly AccountRepository _accountRepository;
+        public AccountServices(AccountRepository accountRepository)
         {
             _accountRepository = accountRepository;
         }
