@@ -1,10 +1,8 @@
 using DataLayer.Entities;
-using DataLayer.DAL.Repositories;
-using DataLayer.DAL;
+
+namespace DataLayer.DAL.Repositories;
 
 public class ApplyRepository : GenericRepository<Apply>
 {
-    public ApplyRepository(TutorDbContext context) : base(context)
-    {
-    }
+    public ApplyRepository(TutorDbContext context) : base(context){}
 }
