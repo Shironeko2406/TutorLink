@@ -1,6 +1,14 @@
-namespace TutorLinkAPI.BusinessLogics.IServices;
+using System.Collections.Generic;
+using DataLayer.Entities;
 
-public interface IAccountService
+namespace TutorLinkAPI.BusinessLogics.IServices
 {
-    
+    public interface IAccountService
+    {
+        List<Account> GetAllAccounts();
+        Account GetAccountById(Guid accountId);
+        void CreateAccount(Account account);
+        void UpdateAccount(Account account);
+        void DeleteAccount(Guid accountId);
+    }
 }

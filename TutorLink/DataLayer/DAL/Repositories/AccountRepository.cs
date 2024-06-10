@@ -1,8 +1,9 @@
 using DataLayer.Entities;
 
-namespace DataLayer.DAL.Repositories;
-
-public class AccountRepository : GenericRepository<Account>
+namespace DataLayer.DAL.Repositories
 {
-    public AccountRepository(TutorDbContext context) : base(context){}
+    public class AccountRepository : GenericRepository<Account>
+    {
+        public AccountRepository(TutorDbContext context) : base(context) { }
+    }
 }

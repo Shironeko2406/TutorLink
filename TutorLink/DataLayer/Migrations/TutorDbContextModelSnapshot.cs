@@ -63,7 +63,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Apply", b =>
@@ -87,7 +87,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("TutorId");
 
-                    b.ToTable("Applies");
+                    b.ToTable("Applies", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Appointment", b =>
@@ -125,7 +125,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.ParentFeedback", b =>
@@ -151,7 +151,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("AppointmentId");
 
-                    b.ToTable("ParentFeedbacks");
+                    b.ToTable("ParentFeedbacks", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.PostRequest", b =>
@@ -203,7 +203,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("CreatedBy");
 
-                    b.ToTable("PostRequests");
+                    b.ToTable("PostRequests", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Qualification", b =>
@@ -236,7 +236,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("TutorId");
 
-                    b.ToTable("Qualifications");
+                    b.ToTable("Qualifications", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Role", b =>
@@ -254,7 +254,7 @@ namespace DataLayer.Migrations
 
                     b.HasKey("RoleId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -320,7 +320,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Tutors");
+                    b.ToTable("Tutors", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Wallet", b =>
@@ -340,7 +340,7 @@ namespace DataLayer.Migrations
                     b.HasIndex("TutorId")
                         .IsUnique();
 
-                    b.ToTable("Wallets");
+                    b.ToTable("Wallets", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.WalletTransaction", b =>
@@ -365,7 +365,7 @@ namespace DataLayer.Migrations
 
                     b.HasIndex("WalletId");
 
-                    b.ToTable("WalletTransactions");
+                    b.ToTable("WalletTransactions", (string)null);
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Account", b =>

@@ -22,10 +22,12 @@ public interface IGenericRepository<T> where T : class
     int SaveChanges();
     void Dispose();
     #endregion
-    
+
     #region Async
     Task<int> CountAsync(Expression<Func<T, bool>> expression = null);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
+    Task<T> GetByIdAsync(Guid id);
+    Task<T> GetByIdAsync(int id);
     Task<ICollection<T>> GetAllWithAsync();
     Task<ICollection<T>> GetListWithAsync(Expression<Func<T, bool>> expression);
     Task<T> GetSingleWithAsync(Expression<Func<T, bool>> expression);
@@ -33,6 +35,7 @@ public interface IGenericRepository<T> where T : class
     Task AddRangeWithAsync(ICollection<T> entities);
     Task UpdateWithAsync(T entity);
     Task SaveChangesAsync();
+    Task<ICollection<T>> GetAllWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
     #endregion
 }
 
@@ -49,7 +52,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _dbSet = context.Set<T>();
     }
-    
+
     #region Unasync method
     public virtual ICollection<T> GetAll()
     {
@@ -124,14 +127,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             throw new Exception(ex.Message);
         }
     }
-    
+
     public void Dispose()
     {
         _context.Dispose();
     }
     #endregion
-    
-    
+
+
     #region Async Methods
     public async Task UpdateWithAsync(T entity)
     {
@@ -152,7 +155,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             throw new Exception(ex.Message);
         }
     }
-    
+
     public IEnumerable<T> GetAllTest()
     {
         return _context.Set<T>().AsNoTracking().ToList();
@@ -196,6 +199,28 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task AddRangeWithAsync(ICollection<T> entities)
     {
         await _dbSet.AddRangeAsync(entities);
+    }
+
+    public async Task<T> GetByIdAsync(Guid id)
+    {
+        return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<T> GetByIdAsync(int id)
+    {
+        return await _dbSet.FindAsync(id);
+    }
+
+    public async Task<ICollection<T>> GetAllWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties)
+    {
+        IQueryable<T> query = _dbSet;
+
+        foreach (var includeProperty in includeProperties)
+        {
+            query = query.Include(includeProperty);
+        }
+
+        return await query.Where(predicate).ToListAsync();
     }
     #endregion
 }
