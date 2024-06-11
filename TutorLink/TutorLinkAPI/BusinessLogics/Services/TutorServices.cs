@@ -94,7 +94,7 @@ public class TutorServices : ITutorService
         {
             var newTutor = _mapper.Map<Tutor>(addTutorViewModel);
             newTutor.TutorId= Guid.NewGuid();
-            var tutorRole = await _roleRepository.GetSingleWithAsync(r => r.RoleId == 3);
+            var tutorRole = await _roleRepository.GetSingleWithAsync(r => r.RoleId == 2);
             newTutor.RoleId = tutorRole.RoleId;
 
             await _tutorRepository.AddSingleWithAsync(newTutor);
@@ -131,22 +131,6 @@ public class TutorServices : ITutorService
         {
             throw new Exception("An error occurred while updating the tutor.", ex);
         }
-    }
-    #endregion
-
-    #region GetTutorByUserName
-    public LoginViewModel GetTutorByUsername(string username)
-    {
-        var tutor = GetTutorEntityByUsername(username);
-        return _mapper.Map<LoginViewModel>(tutor);
-    }
-    #endregion
-    
-    #region Using Entity
-    public Tutor GetTutorEntityByUsername(string username)
-    {
-        var tutor = _tutorRepository.Get(t => t.Username == username);
-        return tutor;
     }
     #endregion
 }
