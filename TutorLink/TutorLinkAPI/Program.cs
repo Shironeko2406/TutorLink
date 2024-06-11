@@ -1,9 +1,13 @@
 using AutoMapper;
 using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.BusinessLogics.Services;
+using System.Text;
 
 namespace TutorLinkAPI
 {
@@ -19,7 +23,58 @@ namespace TutorLinkAPI
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter the JWT token obtained from the login endpoint",
+                    Name = "Authorization"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                         new OpenApiSecurityScheme
+                         {
+                            Reference = new OpenApiReference
+                            {
+                                 Type = ReferenceType.SecurityScheme,
+                                 Id = "Bearer"
+                            }
+                         },
+                         Array.Empty<string>()
+                    }
+                });
+            });
+            // Configure JWT authentication
+            var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
+            var securityKey = jwtSettingsSection["SecurityKey"];
+            var issuer = jwtSettingsSection["Issuer"];
+            var audience = jwtSettingsSection["Audience"];
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = true;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
 
             builder.Services.AddDbContext<TutorDbContext>(options =>
             {
@@ -45,7 +100,7 @@ namespace TutorLinkAPI
             #endregion
             
             #region Interfaces + Services
-            builder.Services.AddScoped<IAccountService, AccountServiceServices>();
+            builder.Services.AddScoped<IAccountService, AccountServices>();
             builder.Services.AddScoped<IApplyService, ApplyServiceServices>();
             builder.Services.AddScoped<IAppointmentFeedback, AppoitmentFeedbackServices>();
             //builder.Services.AddScoped<IAppointmentService, AppointmentServices>();
@@ -59,6 +114,7 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<IWalletService, WalletServices>();
             builder.Services.AddScoped<IWalletTransactionService, WalletTransactionServices>();
             builder.Services.AddScoped<IDepositService, DepositServices>();
+            builder.Services.AddScoped<IAuthService, AuthServices>();
             #endregion
 
             #region CORS handler
