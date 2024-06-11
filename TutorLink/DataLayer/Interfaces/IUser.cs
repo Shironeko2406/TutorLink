@@ -12,5 +12,6 @@ namespace DataLayer.Interfaces
         string Username { get; }
         string Email { get; }
         int RoleId { get; }
+        string Password { get; set; }
     }
 }

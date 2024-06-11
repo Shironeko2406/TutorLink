@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 #pragma warning disable
@@ -33,9 +34,12 @@ public interface IGenericRepository<T> where T : class
     Task<T> GetSingleWithAsync(Expression<Func<T, bool>> expression);
     Task<EntityEntry<T>> AddSingleWithAsync(T entity);
     Task AddRangeWithAsync(ICollection<T> entities);
+    Task DeleteAsync(Guid id);
+
     Task UpdateWithAsync(T entity);
     Task SaveChangesAsync();
     Task<ICollection<T>> GetAllWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+    Task DeleteAsync(Account account);
     #endregion
 }
 
@@ -221,6 +225,16 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
 
         return await query.Where(predicate).ToListAsync();
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync(Account account)
+    {
+        throw new NotImplementedException();
     }
     #endregion
 }
