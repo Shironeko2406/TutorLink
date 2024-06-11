@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
-
 namespace TutorLinkAPI.Controllers;
 
 [Route("[controller]")]

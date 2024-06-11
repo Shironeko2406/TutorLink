@@ -11,11 +11,11 @@ namespace DataLayer.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ParentFeedbacks");
-
-            migrationBuilder.DropTable(
-                name: "Appointments");
+            // migrationBuilder.DropTable(
+            //     name: "ParentFeedbacks");
+            //
+            // migrationBuilder.DropTable(
+            //     name: "Appointments");
 
             migrationBuilder.CreateTable(
                 name: "AppointmentFeedbacks",
