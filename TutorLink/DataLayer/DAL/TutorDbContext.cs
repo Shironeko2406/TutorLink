@@ -27,7 +27,7 @@ public partial class TutorDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        //optionsBuilder.UseSqlServer("Server=localhost;Database=TutorLinkDB;User ID=SA;Password=Trongtin1701;TrustServerCertificate=true");
+        optionsBuilder.UseSqlServer("Server=localhost;Database=TutorLinkDB;User ID=SA;Password=Trongtin1701;TrustServerCertificate=true");
     }
 }
 

@@ -1,6 +1,6 @@
 namespace DataLayer.Entities;
 
-public class Tutor
+public class Tutor : IUser
 {
     public Guid TutorId { get; set; }
     public string Username { get; set; }
@@ -18,6 +18,7 @@ public class Tutor
     public virtual ICollection<Qualification> Qualifications { get; set; }
     public virtual ICollection<AppointmentFeedback>? AppointmentFeedbacks { get; set; }
 
+    Guid IUser.UserId => TutorId;
 }
 
 public enum TutorGenders

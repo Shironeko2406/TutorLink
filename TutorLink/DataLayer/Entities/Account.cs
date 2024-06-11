@@ -1,6 +1,6 @@
 namespace DataLayer.Entities;
 
-public class Account
+public class Account : IUser
 {
     public Guid AccountId { get; set; }
     public string Username { get; set; }
@@ -15,6 +15,9 @@ public class Account
     public virtual ICollection<PostRequest>? PostRequests { get; set; }   
     public virtual ICollection<AppointmentFeedback>? AppointmentFeedbacks { get; set; }
     public virtual Role? Role { get; set; }
+
+    //
+    Guid IUser.UserId => AccountId;
 }
 
 public enum UserGenders
