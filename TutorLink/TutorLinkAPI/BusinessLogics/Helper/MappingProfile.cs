@@ -46,5 +46,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.SkillId, opt => opt.Condition(src => src.SkillId != null && src.SkillId != 0))
             .ForMember(dest => dest.ProficiencyId, opt => opt.Condition(src => src.ProficiencyId != null && src.ProficiencyId != 0))
             .ReverseMap();
+
+
     }
 }
