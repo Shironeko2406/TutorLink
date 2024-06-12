@@ -32,7 +32,7 @@ namespace TutorLinkAPI.Controllers
         #endregion
 
         #region Get Apply By Id
-        [HttpGet("{applyId}")]
+        [HttpGet]
         [Route("GetApplyById")]
         public async Task<IActionResult> GetApplyById(Guid applyId)
         {
@@ -60,7 +60,7 @@ namespace TutorLinkAPI.Controllers
         #endregion
 
         #region Update Apply
-        [HttpPut("{applyId}")]
+        [HttpPut]
         public async Task<IActionResult> UpdateApply(Guid applyId, [FromBody] UpdateApplyViewModel applyViewModel)
         {
             var updatedApply = await _applyService.UpdateApply(applyId, applyViewModel);
@@ -73,7 +73,7 @@ namespace TutorLinkAPI.Controllers
         #endregion
 
         #region Delete Apply
-        [HttpDelete("{applyId}")]
+        [HttpDelete]
         [Route("DeleteApply")]
         public async Task<IActionResult> DeleteApply(Guid applyId)
         {

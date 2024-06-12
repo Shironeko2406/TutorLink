@@ -53,7 +53,7 @@ namespace TutorLinkAPI.Controllers
                 return BadRequest("Failed to add new account!");
             }
 
-            return CreatedAtAction(nameof(GetAccountById), new { id = newAccount.AccountId }, newAccount);
+            return Ok("Add new qualification success!");
         }
 
         [HttpPut]

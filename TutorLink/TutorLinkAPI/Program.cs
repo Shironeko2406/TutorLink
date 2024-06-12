@@ -74,6 +74,17 @@ namespace TutorLinkAPI
                     ValidAudience = audience,
                     ClockSkew = TimeSpan.Zero
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddDbContext<TutorDbContext>(options =>
@@ -86,8 +97,6 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<AccountRepository>();
             builder.Services.AddScoped<ApplyRepository>();
             builder.Services.AddScoped<AppointmentFeedbackRepository>();
-            //builder.Services.AddScoped<AppointmentRepository>();
-            //builder.Services.AddScoped<ParentFeedbackRepository>();
             builder.Services.AddScoped<PostRequestRepository>();
             builder.Services.AddScoped<QualificationRepository>();
             builder.Services.AddScoped<RoleRepository>();
@@ -103,8 +112,6 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<IAccountService, AccountServices>();
             builder.Services.AddScoped<IApplyService, ApplyServices>();
             builder.Services.AddScoped<IAppointmentFeedback, AppoitmentFeedbackServices>();
-            //builder.Services.AddScoped<IAppointmentService, AppointmentServices>();
-            //builder.Services.AddScoped<IParentFeedbackService, ParentFeedbackServices>();
             builder.Services.AddScoped<IPostRequestService, PostRequestServices>();
             builder.Services.AddScoped<IQualificationService, QualificationServices>();
             builder.Services.AddScoped<IRoleService, RoleServices>();
