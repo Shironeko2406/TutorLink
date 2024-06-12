@@ -49,6 +49,7 @@ namespace TutorLinkAPI
                     }
                 });
             });
+
             // Configure JWT authentication
             var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
             var securityKey = jwtSettingsSection["SecurityKey"];
@@ -75,12 +76,11 @@ namespace TutorLinkAPI
                 };
             });
 
-
             builder.Services.AddDbContext<TutorDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
             });
-            
+
             #region Repositories
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddScoped<AccountRepository>();
@@ -98,7 +98,7 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<WalletTransactionRepository>();
             builder.Services.AddScoped<DepositRepository>();
             #endregion
-            
+
             #region Interfaces + Services
             builder.Services.AddScoped<IAccountService, AccountServices>();
             builder.Services.AddScoped<IApplyService, ApplyServices>();
@@ -130,12 +130,23 @@ namespace TutorLinkAPI
 
             var app = builder.Build();
 
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
             app.UseCors(CORS_CONFIG);
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();

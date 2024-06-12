@@ -19,7 +19,7 @@ namespace TutorLinkAPI.Controllers
             _accountService = accountService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet]
         [Route("GetAccountById")]
         public async Task<IActionResult> GetAccountById(Guid id)
         {
@@ -56,7 +56,8 @@ namespace TutorLinkAPI.Controllers
             return CreatedAtAction(nameof(GetAccountById), new { id = newAccount.AccountId }, newAccount);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
+        [Route("UpdateAccount")]
         public async Task<IActionResult> UpdateAccount(Guid id, [FromBody] UpdateAccountViewModel updateModel)
         {
             await _accountService.UpdateAccount(id, updateModel);
@@ -64,7 +65,8 @@ namespace TutorLinkAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("Delete-Account")]
         public async Task<IActionResult> DeleteAccount(Guid id)
         {
             await _accountService.DeleteAccount(id);

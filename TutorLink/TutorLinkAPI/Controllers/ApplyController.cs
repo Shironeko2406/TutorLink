@@ -33,6 +33,7 @@ namespace TutorLinkAPI.Controllers
 
         #region Get Apply By Id
         [HttpGet("{applyId}")]
+        [Route("GetApplyById")]
         public async Task<IActionResult> GetApplyById(Guid applyId)
         {
             var apply = await _applyService.GetApplyById(applyId);
@@ -73,6 +74,7 @@ namespace TutorLinkAPI.Controllers
 
         #region Delete Apply
         [HttpDelete("{applyId}")]
+        [Route("DeleteApply")]
         public async Task<IActionResult> DeleteApply(Guid applyId)
         {
             var result = await _applyService.DeleteApply(applyId);
