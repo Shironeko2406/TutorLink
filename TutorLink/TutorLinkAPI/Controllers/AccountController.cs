@@ -38,9 +38,12 @@ public class AccountController : Controller
         }
         catch (Exception ex)
         {
+            // Log the complete exception message for debugging purposes
             return BadRequest($"Failed to create account: {ex.Message}");
         }
     }
+
+
     #endregion
 
     #region Get list

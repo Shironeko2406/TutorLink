@@ -8,7 +8,7 @@ namespace TutorLinkAPI.BusinessLogics.Services;
 public class AccountServices : IAccountService
 {
     private readonly AccountRepository _accountRepository;
-    private readonly TutorDbContext _context; // Add DbContext
+    private readonly TutorDbContext _context;
 
     public AccountServices(AccountRepository accountRepository, TutorDbContext context)
     {
@@ -22,29 +22,43 @@ public class AccountServices : IAccountService
         var account = _accountRepository.Get(a => a.Username == username);
         return account;
     }
-    public void Save()
+    /*public void Save()
     {
         _context.SaveChanges();
-    }
+    }*/
     #endregion
     #region Add new account
     public void AddNewAccount(string Username, string Password, string Fullname, string Email, string Phone, string Address, UserGenders Gender)
     {
-        var account = new Account
-        {
-            AccountId = Guid.NewGuid(),
-            Username = Username,
-            Password = Password,
-            Fullname = Fullname,
-            Email = Email,
-            Phone = Phone,
-            Address = Address,
-            Gender = Gender,
-            RoleId = 1 // Assuming a default RoleId, adjust as necessary
-        };
+        
+        
+            var account = new Account
+            {
+                AccountId = Guid.NewGuid(),
+                Username = Username,
+                Password = Password,
+                Fullname = Fullname,
+                Email = Email,
+                Phone = Phone,
+                Address = Address,
+                Gender = Gender,
+                RoleId = 1 // Assuming a default RoleId, adjust as necessary
+            };
 
-        _accountRepository.Add(account);
-        Save();
+            _accountRepository.Add(account);
+            _accountRepository.SaveChangesAsync();
+       
+    }
+
+    private string GetFullExceptionMessage(Exception ex)
+    {
+        if (ex == null) return string.Empty;
+        var message = ex.Message;
+        if (ex.InnerException != null)
+        {
+            message += " --> " + GetFullExceptionMessage(ex.InnerException);
+        }
+        return message;
     }
     #endregion
     #region View Account
@@ -74,7 +88,7 @@ public class AccountServices : IAccountService
             account.Gender = Gender;
 
             _accountRepository.Update(account);
-            Save();
+            _accountRepository.SaveChangesAsync();
         }
     }
     #endregion
@@ -86,9 +100,8 @@ public class AccountServices : IAccountService
         if (account != null)
         {
             _accountRepository.Delete(account.AccountId);
-            Save();
+            _accountRepository.SaveChangesAsync();
         }
     }
     #endregion
-
 }
