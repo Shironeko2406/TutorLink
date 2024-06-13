@@ -1,9 +1,7 @@
-using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace TutorLinkAPI.Controllers
@@ -19,59 +17,132 @@ namespace TutorLinkAPI.Controllers
             _accountService = accountService;
         }
 
+        #region Get Account By Id
         [HttpGet]
-        [Route("GetAccountById")]
+        [Route("GetAccountById/{id}")]
         public async Task<IActionResult> GetAccountById(Guid id)
         {
-            var account = await _accountService.GetAccountById(id);
-            if (account == null)
+            try
             {
-                return NotFound();
+                var account = await _accountService.GetAccountById(id);
+                if (account == null)
+                {
+                    return NotFound("Account not found.");
+                }
+                return Ok(account);
             }
-
-            var accountViewModel = new AccountViewModel
+            catch (Exception ex)
             {
-                AccountId = account.AccountId,
-                Username = account.Username,
-                Fullname = account.Fullname,
-                Email = account.Email,
-                Phone = account.Phone,
-                Address = account.Address,
-                Gender = account.Gender
-            };
-
-            return Ok(accountViewModel);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+        #endregion
 
+        #region Add New Account
         [HttpPost]
         [Route("AddNewAccount")]
-        public async Task<IActionResult> AddAccount(Guid id, AddAccountViewModel addAccountModel)
+        public async Task<IActionResult> AddNewAccount([FromBody] AddAccountViewModel newAccount)
         {
-            var newAccount = await _accountService.AddAccount(id, addAccountModel);
             if (newAccount == null)
             {
-                return BadRequest("Failed to add new account!");
+                return BadRequest("Account is null.");
             }
 
-            return Ok("Add new qualification success!");
+            try
+            {
+                var account = await _accountService.AddAccount(newAccount);
+                if (account == null)
+                {
+                    return BadRequest("Failed to add new account.");
+                }
+                return Ok(account);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+        #endregion
 
+        #region Update Account By Id
         [HttpPut]
-        [Route("UpdateAccount")]
-        public async Task<IActionResult> UpdateAccount(Guid id, [FromBody] UpdateAccountViewModel updateModel)
+        [Route("UpdateAccountById/{id}")]
+        public async Task<IActionResult> UpdateAccountById(Guid id,UpdateAccountViewModel updateAccount)
         {
-            await _accountService.UpdateAccount(id, updateModel);
-
-            return NoContent();
+            try
+            {
+                var account = await _accountService.UpdateAccountById(id, updateAccount);
+                if (account == null)
+                {
+                    return BadRequest("Failed to update account.");
+                }
+                return Ok(account);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+        #endregion
 
+        #region Delete Account By Id
         [HttpDelete]
-        [Route("Delete-Account")]
-        public async Task<IActionResult> DeleteAccount(Guid id)
+        [Route("DeleteAccountById/{id}")]
+        public async Task<IActionResult> DeleteAccountById(Guid id)
         {
-            await _accountService.DeleteAccount(id);
-
-            return NoContent();
+            try
+            {
+                await _accountService.DeleteAccount(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
+        #endregion
+
+        #region Delete Account By Model
+        [HttpDelete]
+        [Route("DeleteAccount")]
+        public async Task<IActionResult> DeleteAccount([FromBody] AccountViewModel account)
+        {
+            if (account == null)
+            {
+                return BadRequest("Account is null.");
+            }
+
+            try
+            {
+                await _accountService.DeleteAccount(account);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        #endregion
+
+        #region Get Account By Username
+        [HttpGet]
+        [Route("GetAccountByUsername/{username}")]
+        public IActionResult GetAccountByUsername(string username)
+        {
+            try
+            {
+                var account = _accountService.GetAccountEntityByUsername(username);
+                if (account == null)
+                {
+                    return NotFound("Account not found.");
+                }
+                return Ok(account);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

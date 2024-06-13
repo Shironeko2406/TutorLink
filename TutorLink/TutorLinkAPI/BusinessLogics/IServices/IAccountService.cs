@@ -9,12 +9,10 @@ namespace TutorLinkAPI.BusinessLogics.IServices
     public interface IAccountService
     {
         Task<AccountViewModel> GetAccountById(Guid id);
-        Task<AccountViewModel> AddAccount(Guid id, AddAccountViewModel addAccountModel);
-        Task UpdateAccount(Guid id, UpdateAccountViewModel updateModel);
+        Task<AccountViewModel> AddAccount(AddAccountViewModel addAccountViewModel);
+        Task UpdateAccountById(Guid id, UpdateAccountViewModel updateAccountViewModel);
         Task DeleteAccount(Guid id);
         Task DeleteAccount(AccountViewModel account);
         IUser? GetAccountEntityByUsername(string username);
     }
 }
-
-    

@@ -1,11 +1,9 @@
 using AutoMapper;
 using DataLayer.DAL.Repositories;
 using DataLayer.Entities;
+using DataLayer.Interfaces;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
-using System;
-using System.Threading.Tasks;
-using DataLayer.Interfaces;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
@@ -23,99 +21,69 @@ namespace TutorLinkAPI.BusinessLogics.Services
         #region GetAccountById
         public async Task<AccountViewModel> GetAccountById(Guid id)
         {
-            try
+            var account = await _accountRepository.GetByIdAsync(id);
+            if (account == null)
             {
-                var account = await _accountRepository.GetByIdAsync(id);
-                var accountViewModel = _mapper.Map<AccountViewModel>(account);
-                return accountViewModel;
+                throw new Exception("Account not found.");
             }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while getting the account by Id.", ex);
-            }
+
+            return _mapper.Map<AccountViewModel>(account);
         }
         #endregion
 
         #region AddAccount
-        public async Task<AccountViewModel> AddAccount(Guid id, AddAccountViewModel addAccountModel)
+        public async Task<AccountViewModel> AddAccount(AddAccountViewModel addAccountModel)
         {
-            try
-            {
-                var account = _mapper.Map<Account>(addAccountModel);
-                account.AccountId = id;
+            var newAccount = _mapper.Map<Account>(addAccountModel);
+            newAccount.AccountId = Guid.NewGuid();
 
-                await _accountRepository.AddSingleWithAsync(account);
-                await _accountRepository.SaveChangesAsync();
+            await _accountRepository.AddSingleWithAsync(newAccount);
+            await _accountRepository.SaveChangesAsync();
 
-                var addedAccountViewModel = _mapper.Map<AccountViewModel>(account);
-                return addedAccountViewModel;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while adding a new account.", ex);
-            }
+            return _mapper.Map<AccountViewModel>(newAccount);
         }
         #endregion
 
         #region UpdateAccount
-        public async Task UpdateAccount(Guid id, UpdateAccountViewModel updateModel)
+        public async Task UpdateAccountById(Guid id, UpdateAccountViewModel accountViewModel)
         {
-            try
+            var Account = await _accountRepository.GetByIdAsync(id);
+            if (Account == null)
             {
-                var account = await _accountRepository.GetByIdAsync(id);
-                if (account == null)
-                {
-                    throw new Exception($"Account with ID {id} not found.");
-                }
+                throw new Exception("Account not found.");
+            }
 
-                _mapper.Map(updateModel, account);
-                await _accountRepository.UpdateWithAsync(account);
-                await _accountRepository.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while updating the account.", ex);
-            }
+            _mapper.Map(accountViewModel, Account);
+            await _accountRepository.UpdateWithAsync(Account);
+            await _accountRepository.SaveChangesAsync();
         }
         #endregion
 
         #region DeleteAccount
         public async Task DeleteAccount(Guid id)
         {
-            try
+            var account = await _accountRepository.GetByIdAsync(id);
+            if (account == null)
             {
-                var account = await _accountRepository.GetByIdAsync(id);
-                if (account == null)
-                {
-                    throw new Exception($"Account with ID {id} not found.");
-                }
+                throw new Exception("Account not found.");
+            }
 
-                _accountRepository.Remove(account);
-                await _accountRepository.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while deleting the account.", ex);
-            }
+            await _accountRepository.DeleteAsync(account);
+            await _accountRepository.SaveChangesAsync();
         }
 
         public async Task DeleteAccount(AccountViewModel account)
         {
-            try
-            {
-                var accountEntity = _mapper.Map<Account>(account);
-                _accountRepository.Remove(accountEntity);
-                await _accountRepository.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while deleting the account.", ex);
-            }
+            var existingAccount = _mapper.Map<Account>(account);
+            await _accountRepository.DeleteAsync(existingAccount);
+            await _accountRepository.SaveChangesAsync();
         }
+        #endregion
 
+        #region GetAccountEntityByUsername
         public IUser? GetAccountEntityByUsername(string username)
         {
-            throw new NotImplementedException();
+            return _accountRepository.Get(a => a.Username == username);
         }
         #endregion
     }
