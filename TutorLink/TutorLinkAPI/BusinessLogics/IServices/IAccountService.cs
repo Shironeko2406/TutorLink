@@ -12,5 +12,6 @@ namespace TutorLinkAPI.BusinessLogics.IServices
         void UpdateAccount(Guid accountId, string fullname, string email, string phone, string address, UserGenders gender);
         void DeleteAccount(Guid accountId);
         Account GetAccountEntityByUsername(string username);
+        Account GetAccountEntityByUserId(Guid userId);
     }
 }

@@ -33,7 +33,7 @@ namespace TutorLinkAPI.BusinessLogics.Services
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("UserId", user.UserId.ToString()),
-                new Claim("UserName", user.Username),
+                new Claim("Username", user.Username),
                 new Claim("Email", user.Email),
                 new Claim("Role", user.RoleId.ToString()),
             };
@@ -79,10 +79,23 @@ namespace TutorLinkAPI.BusinessLogics.Services
                 if (user != null)
                 {
                     var token = GenerateToken(user);
-                    return token;
-                }
 
-                return null;
+                    var accessTokenViewModel = new AccessTokenViewModel
+                    {
+                        UserId = user.UserId,
+                        Username = user.Username,
+                        Email = user.Email,
+                        RoleId = user.RoleId,
+                        AccessTokenToken = token.AccessTokenToken,
+                        ExpiredAt = token.ExpiredAt
+                    };
+
+                    return accessTokenViewModel;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception e)
             {

@@ -4,12 +4,12 @@ namespace TutorLinkAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class DepositController : Controller
+    public class DepositController : ControllerBase
     {
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return Ok();
         }
     }
 }

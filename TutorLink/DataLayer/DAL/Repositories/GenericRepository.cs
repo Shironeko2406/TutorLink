@@ -36,6 +36,8 @@ public interface IGenericRepository<T> where T : class
     Task UpdateWithAsync(T entity);
     Task SaveChangesAsync();
     Task<ICollection<T>> GetAllWithIncludeAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includeProperties);
+    Task DeleteAsync(Guid id);
+
     #endregion
 }
 
@@ -221,6 +223,16 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         }
 
         return await query.Where(predicate).ToListAsync();
+    }
+    
+    public virtual async Task DeleteAsync(Guid id)
+    {
+        var entity = await _dbSet.FindAsync(id);
+        if (entity != null)
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+        }
     }
     #endregion
 }

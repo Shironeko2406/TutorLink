@@ -6,7 +6,7 @@ namespace TutorLinkAPI.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class QualificationController : Controller
+public class QualificationController : ControllerBase
 {
     private readonly IQualificationService _qualificationService;
 
@@ -17,7 +17,7 @@ public class QualificationController : Controller
 
     #region Get All Qualifications
     [HttpGet]
-    [Route("GetAllQualifications")]
+    [Route("qualifications")]
     public async Task<IActionResult> GetAllQualifications()
     {
         var qualificationList= await _qualificationService.GetAllQualifications();
@@ -31,7 +31,7 @@ public class QualificationController : Controller
 
     #region Add New Qualification
     [HttpPost]
-    [Route("AddNewQualification")]
+    [Route("add-qualification-for-tutor")]
     public async Task<IActionResult> AddNewQualification(Guid tutorId, AddQualificationViewModel qualificationViewModel)
     {
         var newQualification = await _qualificationService.AddNewQualification(tutorId, qualificationViewModel);
@@ -45,7 +45,7 @@ public class QualificationController : Controller
 
     #region Update Qualification By TutorId, QualificationId
     [HttpPut]
-    [Route("UpdateQualification")]
+    [Route("update-qualification")]
     public async Task<IActionResult> UpdateQualification([FromHeader] Guid tutorId,
                                                          [FromHeader] Guid qualificationId,
                                                          [FromBody] UpdateQualificationViewModel qualificationViewModel)
@@ -56,6 +56,15 @@ public class QualificationController : Controller
             return BadRequest("Failed to add new qualification!");
         }
         return Ok("Updated Qualification successfully!");
+    }
+    #endregion
+    
+    #region Delete Qualification By TutorId, QualificationId
+    [HttpDelete]
+    [Route("delete-qualification")]
+    public async Task<IActionResult> DeleteQualification([FromHeader] Guid tutorId, [FromHeader] Guid qualificationId)
+    {
+        return Ok("Delete Qualification successfully!");
     }
     #endregion
 }

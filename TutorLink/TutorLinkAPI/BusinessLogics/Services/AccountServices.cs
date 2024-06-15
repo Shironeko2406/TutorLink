@@ -23,6 +23,12 @@ public class AccountServices : IAccountService
         var account = _accountRepository.Get(a => a.Username == username);
         return account;
     }
+
+    public Account GetAccountEntityByUserId(Guid userId)
+    {
+        var account = _accountRepository.Get(a => a.AccountId == userId);
+        return account;
+    }
     #endregion
     #region Add new account
     public void AddNewAccount(string Username, string Password, string Fullname, string Email, string Phone, string Address, UserGenders Gender)

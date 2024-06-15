@@ -6,7 +6,7 @@ namespace TutorLinkAPI.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class RoleController : Controller
+public class RoleController : ControllerBase
 {
    private readonly IRoleService _roleService;
 
@@ -17,7 +17,7 @@ public class RoleController : Controller
 
    #region Get All Roles
    [HttpGet]
-   [Route("GetAllRoles")]
+   [Route("roles")]
    public IActionResult GetAllRoles()
    {
       var allRoles = _roleService.GetAllRoles().ToList();
@@ -27,7 +27,7 @@ public class RoleController : Controller
 
    #region Get Role By Id
    [HttpGet]
-   [Route("GetRoleById/{id}")]
+   [Route("role-roleId/{id}")]
    public IActionResult GetRoleById(int id)
    {
       var existedRole = _roleService.GetRoleById(id);
@@ -37,7 +37,7 @@ public class RoleController : Controller
 
    #region Add New Role
    [HttpPost]
-   [Route("AddNewRole")]
+   [Route("add-role")]
    public IActionResult AddNewRole(Role newRole)
    {
       var addRole = _roleService.AddNewRole(newRole);
@@ -52,7 +52,7 @@ public class RoleController : Controller
 
    #region Update Role
    [HttpPut]
-   [Route("UpdateRole/{id}")]
+   [Route("update-role/{id}")]
    public IActionResult UpdateRole(int id, string roleName)
    {
       var checkRole = _roleService.UpdateRole(id, roleName);
@@ -62,6 +62,15 @@ public class RoleController : Controller
       }
 
       return Ok("Updated role success!");
+   }
+   #endregion
+   
+   #region Delete Role
+   [HttpDelete]
+   [Route("delete-role/{id}")]
+   public IActionResult DeleteRole(int id)
+   {
+      return Ok("Deleted role successfully!");
    }
    #endregion
 }

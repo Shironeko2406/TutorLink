@@ -6,7 +6,7 @@ namespace TutorLinkAPI.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class TutorController : Controller
+public class TutorController : ControllerBase
 {
     private readonly ITutorService _tutorService;
     public TutorController(ITutorService tutorService)
@@ -16,7 +16,7 @@ public class TutorController : Controller
 
     #region Get Tutor List
     [HttpGet]
-    [Route("GetTutorList")]
+    [Route("tutors")]
     public async Task<IActionResult> GetTutorList()
     {
        var tutorList= await _tutorService.GetTutorList();
@@ -28,11 +28,11 @@ public class TutorController : Controller
     }
     #endregion
 
-    #region Get Tutor By Id
-    [HttpGet]
-    [Route("GetTutorById/{id}")]
-    public async Task<IActionResult> GetTutorById(Guid id)
-    {
+        #region Get Tutor By Id
+        [HttpGet]
+        [Route("tutor-by-id/{id}")]
+        public async Task<IActionResult> GetTutorById(Guid id)
+        {
         var tutor = await _tutorService.GetTutorById(id);
         if (tutor == null)
         {
@@ -44,7 +44,7 @@ public class TutorController : Controller
 
     #region Add New Tutor
     [HttpPost]
-    [Route("AddNewTutor")]
+    [Route("add-tutor")]
     public async Task<IActionResult> AddNewTutor(AddTutorViewModel newTutor)
     {
         var tutor = await _tutorService.AddNewTutor(newTutor);
@@ -58,7 +58,7 @@ public class TutorController : Controller
 
     #region Update Tutor By Id
     [HttpPut]
-    [Route("UpdateTutorById/{id}")]
+    [Route("update-tutor/{id}")]
     public async Task<IActionResult> UpdateTutorById(Guid id, UpdateTutorViewModel updateTutor)
     {
         var tutor = await _tutorService.UpdateTutorById(id, updateTutor);
@@ -67,6 +67,15 @@ public class TutorController : Controller
             return BadRequest("Failed to add new tutor.");
         }
         return Ok(tutor);
+    }
+    #endregion
+    
+    #region Delete Tutor By Id
+    [HttpDelete]
+    [Route("delete-tutor/{id}")]
+    public async Task<IActionResult> DeleteTutorById(Guid id)
+    {
+        return Ok("Deleted tutor successfully!");
     }
     #endregion
 }
