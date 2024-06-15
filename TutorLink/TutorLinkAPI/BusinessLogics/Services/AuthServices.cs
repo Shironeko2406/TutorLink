@@ -79,10 +79,23 @@ namespace TutorLinkAPI.BusinessLogics.Services
                 if (user != null)
                 {
                     var token = GenerateToken(user);
-                    return token;
-                }
 
-                return null;
+                    var accessTokenViewModel = new AccessTokenViewModel
+                    {
+                        UserId = user.UserId,
+                        Username = user.Username,
+                        Email = user.Email,
+                        RoleId = user.RoleId,
+                        AccessTokenToken = token.AccessTokenToken,
+                        ExpiredAt = token.ExpiredAt
+                    };
+
+                    return accessTokenViewModel;
+                }
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception e)
             {
