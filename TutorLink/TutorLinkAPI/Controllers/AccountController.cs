@@ -23,8 +23,7 @@ public class AccountController : Controller
     [HttpPost("add")]
     public IActionResult AddNewAccount([FromBody] AccountRequestModel model)
     {
-        try
-        {
+       
             _accountService.AddNewAccount(
                 model.Username,
                 model.Password,
@@ -35,12 +34,7 @@ public class AccountController : Controller
                 model.Gender
             );
             return Ok("Account created successfully.");
-        }
-        catch (Exception ex)
-        {
-            // Log the complete exception message for debugging purposes
-            return BadRequest($"Failed to create account: {ex.Message}");
-        }
+        
     }
 
 
@@ -71,8 +65,6 @@ public class AccountController : Controller
     [HttpPut("update/{id}")]
     public IActionResult UpdateAccount(Guid id, [FromBody] AccountUpdateModel model)
     {
-        try
-        {
             _accountService.UpdateAccount(
                 id,
                 model.Fullname,
@@ -82,11 +74,7 @@ public class AccountController : Controller
                 model.Gender
             );
             return Ok("Account updated successfully.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Failed to update account: {ex.Message}");
-        }
+        
     }
     #endregion
 
@@ -94,15 +82,10 @@ public class AccountController : Controller
     [HttpDelete("delete/{id}")]
     public IActionResult DeleteAccount(Guid id)
     {
-        try
-        {
+        
             _accountService.DeleteAccount(id);
             return Ok("Account deleted successfully.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Failed to delete account: {ex.Message}");
-        }
+        
     }
     #endregion
 
