@@ -1,25 +1,13 @@
-<<<<<<< HEAD
-using AutoMapper;
-using DataLayer.DAL.Repositories;
-using DataLayer.Entities;
-using DataLayer.Interfaces;
-=======
 using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
 using DataLayer.Entities;
 using Microsoft.Identity.Client;
->>>>>>> Account-
 using TutorLinkAPI.BusinessLogics.IServices;
-using TutorLinkAPI.ViewModel;
 
-namespace TutorLinkAPI.BusinessLogics.Services
+namespace TutorLinkAPI.BusinessLogics.Services;
+
+public class AccountServices : IAccountService
 {
-<<<<<<< HEAD
-    public class AccountServices : IAccountService
-    {
-        private readonly IMapper _mapper;
-        private readonly AccountRepository _accountRepository;
-=======
     private readonly AccountRepository _accountRepository;
     private readonly TutorDbContext _context;
 
@@ -28,107 +16,35 @@ namespace TutorLinkAPI.BusinessLogics.Services
         _accountRepository = accountRepository;
         _context = context;
     }
->>>>>>> Account-
 
-        public AccountServices(IMapper mapper, AccountRepository accountRepository)
-        {
-            _mapper = mapper;
-            _accountRepository = accountRepository;
-        }
-
-        #region GetAccountById
-        public async Task<AccountViewModel> GetAccountById(Guid id)
-        {
-            var account = await _accountRepository.GetByIdAsync(id);
-            if (account == null)
-            {
-                throw new Exception("Account not found.");
-            }
-
-            return _mapper.Map<AccountViewModel>(account);
-        }
-        #endregion
-
-        #region AddAccount
-        public async Task<AccountViewModel> AddAccount(AddAccountViewModel addAccountModel)
-        {
-            var newAccount = _mapper.Map<Account>(addAccountModel);
-            newAccount.AccountId = Guid.NewGuid();
-
-            await _accountRepository.AddSingleWithAsync(newAccount);
-            await _accountRepository.SaveChangesAsync();
-
-            return _mapper.Map<AccountViewModel>(newAccount);
-        }
-        #endregion
-
-        #region UpdateAccount
-        public async Task UpdateAccountById(Guid id, UpdateAccountViewModel accountViewModel)
-        {
-            var Account = await _accountRepository.GetByIdAsync(id);
-            if (Account == null)
-            {
-                throw new Exception("Account not found.");
-            }
-
-            _mapper.Map(accountViewModel, Account);
-            await _accountRepository.UpdateWithAsync(Account);
-            await _accountRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region DeleteAccount
-        public async Task DeleteAccount(Guid id)
-        {
-            var account = await _accountRepository.GetByIdAsync(id);
-            if (account == null)
-            {
-                throw new Exception("Account not found.");
-            }
-
-            await _accountRepository.DeleteAsync(account);
-            await _accountRepository.SaveChangesAsync();
-        }
-
-        public async Task DeleteAccount(AccountViewModel account)
-        {
-            var existingAccount = _mapper.Map<Account>(account);
-            await _accountRepository.DeleteAsync(existingAccount);
-            await _accountRepository.SaveChangesAsync();
-        }
-        #endregion
-
-        #region GetAccountEntityByUsername
-        public IUser? GetAccountEntityByUsername(string username)
-        {
-            return _accountRepository.Get(a => a.Username == username);
-        }
-        #endregion
+    #region Using entity
+    public Account GetAccountEntityByUsername(string username)
+    {
+        var account = _accountRepository.Get(a => a.Username == username);
+        return account;
     }
-<<<<<<< HEAD
-=======
     #endregion
     #region Add new account
     public void AddNewAccount(string Username, string Password, string Fullname, string Email, string Phone, string Address, UserGenders Gender)
     {
-        
-        
-            var account = new Account
-            {
-                AccountId = Guid.NewGuid(),
-                Username = Username,
-                Password = Password,
-                Fullname = Fullname,
-                Email = Email,
-                Phone = Phone,
-                Address = Address,
-                Gender = Gender,
-                RoleId = 1 
-            };
 
-            _accountRepository.Add(account);
-            _accountRepository.SaveChangesAsync();
-       
+
+        var account = new Account
+        {
+            AccountId = Guid.NewGuid(),
+            Username = Username,
+            Password = Password,
+            Fullname = Fullname,
+            Email = Email,
+            Phone = Phone,
+            Address = Address,
+            Gender = Gender,
+            RoleId = 1
+        };
+
+        _accountRepository.Add(account);
+        _accountRepository.SaveChangesAsync();
+
     }
 
     private string GetFullExceptionMessage(Exception ex)
@@ -199,5 +115,4 @@ namespace TutorLinkAPI.BusinessLogics.Services
         }
     }
     #endregion
->>>>>>> Account-
 }
