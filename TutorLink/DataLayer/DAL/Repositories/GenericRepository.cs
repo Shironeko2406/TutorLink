@@ -48,8 +48,8 @@ public interface IGenericRepository<T> where T : class
 #region Methods
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
-    private readonly TutorDbContext _context;
-    private readonly DbSet<T> _dbSet;
+    protected readonly TutorDbContext _context;
+    protected readonly DbSet<T> _dbSet;
 
     public GenericRepository(TutorDbContext context)
     {
