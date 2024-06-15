@@ -33,7 +33,7 @@ namespace TutorLinkAPI.BusinessLogics.Services
             List<Claim> claims = new List<Claim>()
             {
                 new Claim("UserId", user.UserId.ToString()),
-                new Claim("UserName", user.Username),
+                new Claim("Username", user.Username),
                 new Claim("Email", user.Email),
                 new Claim("Role", user.RoleId.ToString()),
             };

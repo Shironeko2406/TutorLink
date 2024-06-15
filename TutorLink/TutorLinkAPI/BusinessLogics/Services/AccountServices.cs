@@ -19,5 +19,11 @@ public class AccountServices : IAccountService
         var account = _accountRepository.Get(a => a.Username == username);
         return account;
     }
+
+    public Account GetAccountEntityByUserId(Guid userId)
+    {
+        var account = _accountRepository.Get(a => a.AccountId == userId);
+        return account;
+    }
     #endregion
 }

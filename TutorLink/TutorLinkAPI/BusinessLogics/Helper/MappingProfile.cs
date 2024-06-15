@@ -46,7 +46,21 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.SkillId, opt => opt.Condition(src => src.SkillId != null && src.SkillId != 0))
             .ForMember(dest => dest.ProficiencyId, opt => opt.Condition(src => src.ProficiencyId != null && src.ProficiencyId != 0))
             .ReverseMap();
-
+        
+        //PostRequest
+        CreateMap<PostRequestViewModel, PostRequest>().ReverseMap();
+        CreateMap<AddPostRequestViewModel, PostRequest>()
+            .ForMember(dest => dest.PostId, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.Description, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.Location, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.Schedule, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.PreferredTime, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender != 0 ? src.Gender : default(RequestGender)))  
+            .ForMember(dest => dest.Mode, opt => opt.MapFrom(src => src.Mode != 0 ? src.Mode : default(RequestMode)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status != 0 ? src.Status : default(RequestStatuses)))
+            .ForMember(dest => dest.RequestSkill, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ReverseMap();
 
     }
 }
