@@ -69,6 +69,44 @@ namespace DataLayer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            AccountId = new Guid("723db346-097e-446a-8293-6fdc7c97bbdb"),
+                            Address = "Ho Chi Minh, Viet Name",
+                            Email = "admin@gmail.com",
+                            Fullname = "ADMIN",
+                            Gender = 1,
+                            Password = "admin123",
+                            Phone = "0945677876",
+                            RoleId = 1,
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            AccountId = new Guid("805a13e4-8058-4d90-9d14-7a50b75cada2"),
+                            Address = "Ho Chi Minh, Viet Name",
+                            Email = "staff@gmail.com",
+                            Fullname = "STAFF",
+                            Gender = 0,
+                            Password = "staff123",
+                            Phone = "0912377890",
+                            RoleId = 2,
+                            Username = "staff"
+                        },
+                        new
+                        {
+                            AccountId = new Guid("36c7691f-b087-4aba-a111-ffeaba8be973"),
+                            Address = "Ho Chi Minh, Viet Name",
+                            Email = "vana@gmail.com",
+                            Fullname = "Tran Van A",
+                            Gender = 0,
+                            Password = "@123",
+                            Phone = "0978988768",
+                            RoleId = 4,
+                            Username = "parent1"
+                        });
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Apply", b =>
@@ -196,8 +234,8 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("PreferredTime")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("RequestSkill")
                         .IsRequired()

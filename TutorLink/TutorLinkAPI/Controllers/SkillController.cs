@@ -4,12 +4,12 @@ namespace TutorLinkAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class SkillController : Controller
+    public class SkillController : ControllerBase
     {
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return Ok();
         }
     }
 }
