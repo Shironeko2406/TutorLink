@@ -50,8 +50,8 @@ public class AccountController : Controller
     [HttpGet("list")]
     public IActionResult ShowAccountList()
     {
-        var accounts = _accountService.GetAllAccounts();
-        return Ok(accounts);
+        var account = _accountService.GetAllAccounts();
+        return Ok(account);
     }
     #endregion
 

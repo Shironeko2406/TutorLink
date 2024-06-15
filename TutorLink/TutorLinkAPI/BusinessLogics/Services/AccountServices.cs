@@ -1,6 +1,7 @@
 using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
 using DataLayer.Entities;
+using Microsoft.Identity.Client;
 using TutorLinkAPI.BusinessLogics.IServices;
 
 namespace TutorLinkAPI.BusinessLogics.Services;
@@ -22,10 +23,6 @@ public class AccountServices : IAccountService
         var account = _accountRepository.Get(a => a.Username == username);
         return account;
     }
-    /*public void Save()
-    {
-        _context.SaveChanges();
-    }*/
     #endregion
     #region Add new account
     public void AddNewAccount(string Username, string Password, string Fullname, string Email, string Phone, string Address, UserGenders Gender)
@@ -42,7 +39,7 @@ public class AccountServices : IAccountService
                 Phone = Phone,
                 Address = Address,
                 Gender = Gender,
-                RoleId = 1 // Assuming a default RoleId, adjust as necessary
+                RoleId = 1 
             };
 
             _accountRepository.Add(account);
@@ -64,14 +61,28 @@ public class AccountServices : IAccountService
     #region View Account
     public IEnumerable<Account> GetAllAccounts()
     {
-        return _accountRepository.GetAll();
+        try
+        {
+            return _accountRepository.GetAll() ?? new List<Account>();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error retrieving accounts: {ex.Message}", ex);
+        }
     }
     #endregion
 
     #region Get account by Id
     public Account GetAccountById(Guid AccountId)
     {
-        return _accountRepository.GetById(AccountId);
+        try
+        {
+            return _accountRepository.GetById(AccountId) ?? throw new Exception("Account not found.");
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error retrieving account: {ex.Message}", ex);
+        }
     }
     #endregion
 
@@ -88,7 +99,7 @@ public class AccountServices : IAccountService
             account.Gender = Gender;
 
             _accountRepository.Update(account);
-            _accountRepository.SaveChangesAsync();
+            _accountRepository.SaveChanges();
         }
     }
     #endregion
@@ -100,7 +111,7 @@ public class AccountServices : IAccountService
         if (account != null)
         {
             _accountRepository.Delete(account.AccountId);
-            _accountRepository.SaveChangesAsync();
+            _accountRepository.SaveChanges();
         }
     }
     #endregion
