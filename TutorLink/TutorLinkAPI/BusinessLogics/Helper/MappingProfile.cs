@@ -55,11 +55,18 @@ namespace TutorLinkAPI.BusinessLogics.Helper
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
 
             // Apply
+            CreateMap<Apply, ApplyViewModel>()
+                .ForMember(dest => dest.ApplyId, opt => opt.MapFrom(src => src.ApplyId))
+                .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
+                .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ReverseMap();
+
             CreateMap<AddApplyViewModel, Apply>()
                 .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
                 .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
-
+                
             CreateMap<UpdateApplyViewModel, Apply>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
         }

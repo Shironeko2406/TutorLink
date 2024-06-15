@@ -110,7 +110,7 @@ namespace TutorLinkAPI
 
             #region Interfaces + Services
             builder.Services.AddScoped<IAccountService, AccountServices>();
-            builder.Services.AddScoped<IApplyService, ApplyServices>();
+            builder.Services.AddScoped<IApplyService, ApplyService>();
             builder.Services.AddScoped<IAppointmentFeedback, AppoitmentFeedbackServices>();
             builder.Services.AddScoped<IPostRequestService, PostRequestServices>();
             builder.Services.AddScoped<IQualificationService, QualificationServices>();
