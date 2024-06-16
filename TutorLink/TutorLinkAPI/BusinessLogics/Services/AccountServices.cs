@@ -30,28 +30,26 @@ public class AccountServices : IAccountService
         return account;
     }
     #endregion
-    #region Add new account
-    public void AddNewAccount(string Username, string Password, string Fullname, string Email, string Phone, string Address, UserGenders Gender)
+    public Account AddNewAccount(string username, string password, string fullname, string email, string phone, string address, UserGenders gender)
     {
-        
-        
-            var account = new Account
-            {
-                AccountId = Guid.NewGuid(),
-                Username = Username,
-                Password = Password,
-                Fullname = Fullname,
-                Email = Email,
-                Phone = Phone,
-                Address = Address,
-                Gender = Gender,
-                RoleId = 1 
-            };
+        var newAccount = new Account
+        {
+            AccountId = Guid.NewGuid(),
+            Username = username,
+            Password = password, // Ideally, this should be hashed
+            Fullname = fullname,
+            Email = email,
+            Phone = phone,
+            Address = address,
+            Gender = gender,
+        };
 
-            _accountRepository.Add(account);
-            _accountRepository.SaveChangesAsync();
-       
+        _context.Accounts.Add(newAccount);
+        _context.SaveChanges();
+
+        return newAccount;
     }
+
 
     private string GetFullExceptionMessage(Exception ex)
     {
@@ -63,7 +61,7 @@ public class AccountServices : IAccountService
         }
         return message;
     }
-    #endregion
+    
     #region View Account
     public IEnumerable<Account> GetAllAccounts()
     {
@@ -93,21 +91,23 @@ public class AccountServices : IAccountService
     #endregion
 
     #region Update account
-    public void UpdateAccount(Guid AccountId, string Fullname, string Email, string Phone, string Address, UserGenders Gender)
+    public void UpdateAccount(Guid id, string username, string password, string fullname, string email, string phone, string address, UserGenders gender)
     {
-        var account = _accountRepository.GetById(AccountId);
-        if (account != null)
-        {
-            account.Fullname = Fullname;
-            account.Email = Email;
-            account.Phone = Phone;
-            account.Address = Address;
-            account.Gender = Gender;
+        var account = _context.Accounts.Find(id);
+        if (account == null)
+            throw new Exception("Account not found.");
 
-            _accountRepository.Update(account);
-            _accountRepository.SaveChanges();
-        }
+        account.Username = username;
+        account.Password = password; // Ensure password hashing in production
+        account.Fullname = fullname;
+        account.Email = email;
+        account.Phone = phone;
+        account.Address = address;
+        account.Gender = gender;
+
+        _context.SaveChanges();
     }
+
     #endregion
 
     #region Delete account with Id

@@ -14,31 +14,33 @@ public class AccountController : Controller
     _accountService = accountService; 
     }
 
-    [HttpGet]
-    public IActionResult Index()
-    {
-        return View();
-    }
-    #region Add new account
     [HttpPost("add")]
     public IActionResult AddNewAccount([FromBody] AccountRequestModel model)
     {
-       
-            _accountService.AddNewAccount(
-                model.Username,
-                model.Password,
-                model.Fullname,
-                model.Email,
-                model.Phone,
-                model.Address,
-                model.Gender
-            );
-            return Ok("Account created successfully.");
-        
+        var newAccount = _accountService.AddNewAccount(
+            model.Username,
+            model.Password,
+            model.Fullname,
+            model.Email,
+            model.Phone,
+            model.Address,
+            model.Gender
+        );
+
+        var response = new
+        {
+            newAccount.AccountId,
+            newAccount.Username,
+            newAccount.Fullname,
+            newAccount.Email,
+            newAccount.Phone,
+            newAccount.Address,
+            newAccount.Gender,
+        };
+
+        return Ok(response);
     }
 
-
-    #endregion
 
     #region Get list
     [HttpGet("list")]
@@ -61,22 +63,22 @@ public class AccountController : Controller
     }
     #endregion
 
-    #region Update Account
     [HttpPut("update/{id}")]
     public IActionResult UpdateAccount(Guid id, [FromBody] AccountUpdateModel model)
     {
-            _accountService.UpdateAccount(
-                id,
-                model.Fullname,
-                model.Email,
-                model.Phone,
-                model.Address,
-                model.Gender
-            );
-            return Ok("Account updated successfully.");
-        
+        _accountService.UpdateAccount(
+            id,
+            model.Username,
+            model.Password,
+            model.Fullname,
+            model.Email,
+            model.Phone,
+            model.Address,
+            model.Gender
+        );
+        return Ok("Account updated successfully.");
     }
-    #endregion
+
 
     #region Delete account
     [HttpDelete("delete/{id}")]
@@ -103,7 +105,8 @@ public class AccountRequestModel
 }
 
 public class AccountUpdateModel
-{
+{   public String Username { get; set; }
+    public string Password { get; set; }
     public string Fullname { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
