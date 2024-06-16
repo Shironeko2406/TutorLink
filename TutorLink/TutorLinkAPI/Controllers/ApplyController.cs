@@ -1,8 +1,7 @@
-using DataLayer.Entities;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
-using System;
-using System.Threading.Tasks;
+using TutorLinkAPI.ViewModel;
 
 namespace TutorLinkAPI.Controllers
 {
@@ -11,90 +10,86 @@ namespace TutorLinkAPI.Controllers
     public class ApplyController : ControllerBase
     {
         private readonly IApplyService _applyService;
-        private readonly ILogger<ApplyController> _logger;
 
-        public ApplyController(IApplyService applyService, ILogger<ApplyController> logger)
+        public ApplyController(IApplyService applyService)
         {
             _applyService = applyService;
-            _logger = logger;
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddNewApply([FromBody] ApplyRequestModel model)
+        public IActionResult AddNewApply(Guid postId, Guid tutorId)
         {
-            try
+            var newApply = _applyService.AddNewApply(postId, tutorId);
+
+            var response = new
             {
-                await _applyService.AddNewApply(
-                    model.TutorId,
-                    model.PostRequestId,
-                    model.Status
-                );
-                return Ok("Apply created successfully.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to create apply");
-                return BadRequest($"Failed to create apply: {ex.InnerException?.Message ?? ex.Message}");
-            }
+                newApply.ApplyId,
+                newApply.PostId,
+                newApply.TutorId,
+                newApply.Status
+            };
+
+            return Ok(response);
         }
 
-        [HttpGet("list")]
-        public async Task<IActionResult> ShowApplyList()
+        [HttpGet("get/{applyId}")]
+        public IActionResult GetApplyById(Guid applyId)
         {
-            var applies = await _applyService.GetAllApplies();
-            return Ok(applies);
-        }
-
-        [HttpGet("get/{id}")]
-        public async Task<IActionResult> GetApplyById(Guid id)
-        {
-            var apply = await _applyService.GetApplyById(id);
+            var apply = _applyService.GetApplyById(applyId);
             if (apply == null)
                 return NotFound("Apply not found.");
 
-            return Ok(apply);
+            var response = new
+            {
+                apply.ApplyId,
+                apply.PostId,
+                apply.TutorId,
+                apply.Status
+            };
+
+            return Ok(response);
         }
 
-        [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateApply(Guid id, [FromBody] ApplyUpdateModel model)
+        [HttpPut("update/{applyId}")]
+        public IActionResult UpdateApplyStatus(Guid applyId, [FromBody] UpdateApplyViewModel model)
         {
             try
             {
-                await _applyService.UpdateApply(id, model.Status);
-                return Ok("Apply updated successfully.");
+                _applyService.UpdateApplyStatus(applyId, model);
+                return Ok("Apply status updated successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to update apply");
-                return BadRequest($"Failed to update apply: {ex.InnerException?.Message ?? ex.Message}");
+                return BadRequest($"Failed to update apply status: {ex.Message}");
             }
         }
 
-        [HttpDelete("delete/{id}")]
-        public async Task<IActionResult> DeleteApply(Guid id)
+        [HttpDelete("delete/{applyId}")]
+        public IActionResult DeleteApply(Guid applyId)
         {
             try
             {
-                await _applyService.DeleteApply(id);
+                _applyService.DeleteApply(applyId);
                 return Ok("Apply deleted successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to delete apply");
-                return BadRequest($"Failed to delete apply: {ex.InnerException?.Message ?? ex.Message}");
+                return BadRequest($"Failed to delete apply: {ex.Message}");
             }
         }
-    }
 
-    public class ApplyRequestModel
-    {
-        public Guid TutorId { get; set; }
-        public Guid PostRequestId { get; set; }
-        public ApplyStatuses Status { get; set; }
-    }
+        [HttpGet("tutor/{tutorId}")]
+        public IActionResult GetAppliesByTutorId(Guid tutorId)
+        {
+            var applies = _applyService.GetAppliesByTutorId(tutorId);
+            return Ok(applies);
+        }
 
-    public class ApplyUpdateModel
-    {
-        public ApplyStatuses Status { get; set; }
+        [HttpGet("list")]
+        public IActionResult GetAllApplies()
+        {
+            var applies = _applyService.GetAllApplies();
+            return Ok(applies);
+        }
     }
 }

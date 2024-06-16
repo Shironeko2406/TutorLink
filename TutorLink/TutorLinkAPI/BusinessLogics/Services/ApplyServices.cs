@@ -1,73 +1,63 @@
-using DataLayer.Entities;
-using DataLayer.DAL.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using TutorLinkAPI.ViewModel;
+using DataLayer.Entities;
+using DataLayer.DAL.Repositories;
+using System.Linq;
 using TutorLinkAPI.BusinessLogics.IServices;
-using Microsoft.Extensions.Logging;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
     public class ApplyServices : IApplyService
     {
         private readonly IGenericRepository<Apply> _applyRepository;
-        private readonly ILogger<ApplyServices> _logger;
 
-        public ApplyServices(IGenericRepository<Apply> applyRepository, ILogger<ApplyServices> logger)
+        public ApplyServices(IGenericRepository<Apply> applyRepository)
         {
             _applyRepository = applyRepository;
-            _logger = logger;
         }
 
-        public async Task AddNewApply(Guid tutorId, Guid postRequestId, ApplyStatuses status)
+        public Apply GetApplyById(Guid applyId)
         {
-            try
+            return _applyRepository.Get(a => a.ApplyId == applyId);
+        }
+
+        public Apply AddNewApply(Guid postId, Guid tutorId)
+        {
+            var newApply = new Apply
             {
-                var apply = new Apply
-                {
-                    ApplyId = Guid.NewGuid(),
-                    TutorId = tutorId,
-                    PostId = postRequestId,
-                    Status = status
-                };
-                await _applyRepository.AddSingleWithAsync(apply);
-                await _applyRepository.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while creating a new apply");
-                throw;
-            }
+                ApplyId = Guid.NewGuid(),
+                PostId = postId,
+                TutorId = tutorId,
+                Status = ApplyStatuses.Pending
+            };
+
+            return _applyRepository.Add(newApply);
         }
 
-        public async Task<IEnumerable<Apply>> GetAllApplies()
+        public void UpdateApplyStatus(Guid applyId, UpdateApplyViewModel model)
         {
-            return await _applyRepository.GetAllWithAsync();
+            var apply = _applyRepository.Get(a => a.ApplyId == applyId);
+            if (apply == null)
+                throw new Exception("Apply not found.");
+
+            apply.Status = model.Status;
+            _applyRepository.Update(apply);
         }
 
-        public async Task<Apply> GetApplyById(Guid id)
+        public void DeleteApply(Guid applyId)
         {
-            return await _applyRepository.GetByIdAsync(id);
+            _applyRepository.Delete(applyId);
         }
 
-        public async Task UpdateApply(Guid id, ApplyStatuses status)
+        public List<Apply> GetAppliesByTutorId(Guid tutorId)
         {
-            var apply = await _applyRepository.GetByIdAsync(id);
-            if (apply != null)
-            {
-                apply.Status = status;
-                await _applyRepository.UpdateWithAsync(apply);
-            }
+            return _applyRepository.GetList(a => a.TutorId == tutorId).ToList();
         }
 
-        public async Task DeleteApply(Guid id)
+        public List<Apply> GetAllApplies()
         {
-            var apply = await _applyRepository.GetByIdAsync(id);
-            if (apply != null)
-            {
-                _applyRepository.Remove(apply);
-                await _applyRepository.SaveChangesAsync();
-            }
+            return _applyRepository.GetAll().ToList();
         }
     }
 }

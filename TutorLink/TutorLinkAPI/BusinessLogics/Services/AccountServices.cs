@@ -32,24 +32,22 @@ public class AccountServices : IAccountService
     #endregion
     public Account AddNewAccount(string username, string password, string fullname, string email, string phone, string address, UserGenders gender)
     {
-
-
-        var account = new Account
+        var newAccount = new Account
         {
             AccountId = Guid.NewGuid(),
-            Username = Username,
-            Password = Password,
-            Fullname = Fullname,
-            Email = Email,
-            Phone = Phone,
-            Address = Address,
-            Gender = Gender,
-            RoleId = 1
+            Username = username,
+            Password = password, // Ideally, this should be hashed
+            Fullname = fullname,
+            Email = email,
+            Phone = phone,
+            Address = address,
+            Gender = gender,
         };
 
-            _accountRepository.Add(account);
-            _accountRepository.SaveChangesAsync();
-       
+        _context.Accounts.Add(newAccount);
+        _context.SaveChanges();
+
+        return newAccount;
     }
 
 
@@ -63,7 +61,7 @@ public class AccountServices : IAccountService
         }
         return message;
     }
-    
+
     #region View Account
     public IEnumerable<Account> GetAllAccounts()
     {
