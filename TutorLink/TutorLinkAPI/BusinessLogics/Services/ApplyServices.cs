@@ -1,71 +1,73 @@
+using DataLayer.Entities;
+using DataLayer.DAL.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoMapper;
-using DataLayer.Entities;
-using DataLayer.DAL.Repositories;
 using TutorLinkAPI.BusinessLogics.IServices;
-using TutorLinkAPI.ViewModel;
+using Microsoft.Extensions.Logging;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
-    public class ApplyService : IApplyService
+    public class ApplyServices : IApplyService
     {
         private readonly IGenericRepository<Apply> _applyRepository;
-        private readonly IMapper _mapper;
+        private readonly ILogger<ApplyServices> _logger;
 
-        public ApplyService(IGenericRepository<Apply> applyRepository, IMapper mapper)
+        public ApplyServices(IGenericRepository<Apply> applyRepository, ILogger<ApplyServices> logger)
         {
             _applyRepository = applyRepository;
-            _mapper = mapper;
+            _logger = logger;
         }
 
-        public async Task<IEnumerable<ApplyViewModel>> GetAllApplies()
+        public async Task AddNewApply(Guid tutorId, Guid postRequestId, ApplyStatuses status)
         {
-            var applies = await _applyRepository.GetAllWithAsync();
-            return _mapper.Map<IEnumerable<ApplyViewModel>>(applies); // Map applies to ApplyViewModel
+            try
+            {
+                var apply = new Apply
+                {
+                    ApplyId = Guid.NewGuid(),
+                    TutorId = tutorId,
+                    PostId = postRequestId,
+                    Status = status
+                };
+                await _applyRepository.AddSingleWithAsync(apply);
+                await _applyRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating a new apply");
+                throw;
+            }
         }
 
-        public async Task<ApplyViewModel> GetApplyById(Guid applyId)
+        public async Task<IEnumerable<Apply>> GetAllApplies()
         {
-            var apply = await _applyRepository.GetByIdAsync(applyId);
-            if (apply == null) return null;
-            return _mapper.Map<ApplyViewModel>(apply); // Map apply to ApplyViewModel
+            return await _applyRepository.GetAllWithAsync();
         }
 
-        public async Task<ApplyViewModel> AddNewApply(AddApplyViewModel applyViewModel)
+        public async Task<Apply> GetApplyById(Guid id)
         {
-            var apply = _mapper.Map<Apply>(applyViewModel);
-            apply.ApplyId = Guid.NewGuid();
-
-            await _applyRepository.AddSingleWithAsync(apply);
-            await _applyRepository.SaveChangesAsync();
-
-            return _mapper.Map<ApplyViewModel>(apply); // Map apply to ApplyViewModel
+            return await _applyRepository.GetByIdAsync(id);
         }
 
-        public async Task<ApplyViewModel> UpdateApply(Guid applyId, UpdateApplyViewModel applyViewModel)
+        public async Task UpdateApply(Guid id, ApplyStatuses status)
         {
-            var apply = await _applyRepository.GetByIdAsync(applyId);
-            if (apply == null) return null;
-
-            _mapper.Map(applyViewModel, apply);
-
-            await _applyRepository.UpdateWithAsync(apply);
-            await _applyRepository.SaveChangesAsync();
-
-            return _mapper.Map<ApplyViewModel>(apply); // Map apply to ApplyViewModel
+            var apply = await _applyRepository.GetByIdAsync(id);
+            if (apply != null)
+            {
+                apply.Status = status;
+                await _applyRepository.UpdateWithAsync(apply);
+            }
         }
 
-        public async Task<bool> DeleteApply(Guid applyId)
+        public async Task DeleteApply(Guid id)
         {
-            var apply = await _applyRepository.GetByIdAsync(applyId);
-            if (apply == null) return false;
-
-            _applyRepository.Remove(apply);
-            await _applyRepository.SaveChangesAsync();
-
-            return true;
+            var apply = await _applyRepository.GetByIdAsync(id);
+            if (apply != null)
+            {
+                _applyRepository.Remove(apply);
+                await _applyRepository.SaveChangesAsync();
+            }
         }
     }
 }

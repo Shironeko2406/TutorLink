@@ -1,13 +1,14 @@
 using AutoMapper;
-using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
+using DataLayer.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.BusinessLogics.Services;
-using System.Text;
 
 namespace TutorLinkAPI
 {
@@ -93,7 +94,7 @@ namespace TutorLinkAPI
             });
 
             #region Repositories
-            builder.Services.AddScoped(typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<AccountRepository>();
             builder.Services.AddScoped<ApplyRepository>();
             builder.Services.AddScoped<AppointmentFeedbackRepository>();
@@ -110,7 +111,7 @@ namespace TutorLinkAPI
 
             #region Interfaces + Services
             builder.Services.AddScoped<IAccountService, AccountServices>();
-            builder.Services.AddScoped<IApplyService, ApplyService>();
+            builder.Services.AddScoped<IApplyService, ApplyServices>();
             builder.Services.AddScoped<IAppointmentFeedback, AppoitmentFeedbackServices>();
             builder.Services.AddScoped<IPostRequestService, PostRequestServices>();
             builder.Services.AddScoped<IQualificationService, QualificationServices>();
