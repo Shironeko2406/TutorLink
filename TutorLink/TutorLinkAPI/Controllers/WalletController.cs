@@ -4,11 +4,11 @@ namespace TutorLinkAPI.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class WalletController : Controller
+public class WalletController : ControllerBase
 {
     [HttpGet]
     public IActionResult Index()
     {
-        return View();
+        return Ok();
     }
 }

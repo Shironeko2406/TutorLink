@@ -54,13 +54,31 @@ namespace TutorLinkAPI.BusinessLogics.Helper
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender));
 
-            // Apply
-            CreateMap<Apply, ApplyViewModel>()
-                .ForMember(dest => dest.ApplyId, opt => opt.MapFrom(src => src.ApplyId))
-                .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
-                .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
-                .ReverseMap();
+        //Qualification
+        CreateMap<QualificationViewModel, Qualification>().ReverseMap();
+        CreateMap<AddQualificationViewModel, Qualification>().ReverseMap();
+        CreateMap<UpdateQualificationViewModel, Qualification>()
+            .ForMember(dest => dest.QualificationName, opt => opt.Condition(src => src.QualificationName != null && src.QualificationName != "string"))
+            .ForMember(dest => dest.InstitutionName, opt => opt.Condition(src => src.InstitutionName != null && src.InstitutionName != "string"))
+            .ForMember(dest => dest.YearObtained, opt => opt.MapFrom(src => src.YearObtained))
+            .ForMember(dest => dest.SkillId, opt => opt.Condition(src => src.SkillId != null && src.SkillId != 0))
+            .ForMember(dest => dest.ProficiencyId, opt => opt.Condition(src => src.ProficiencyId != null && src.ProficiencyId != 0))
+            .ReverseMap();
+        
+        //PostRequest
+        CreateMap<PostRequestViewModel, PostRequest>().ReverseMap();
+        CreateMap<AddPostRequestViewModel, PostRequest>()
+            .ForMember(dest => dest.PostId, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
+            .ForMember(dest => dest.Description, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.Location, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.Schedule, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.PreferredTime, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender != 0 ? src.Gender : default(RequestGender)))  
+            .ForMember(dest => dest.Mode, opt => opt.MapFrom(src => src.Mode != 0 ? src.Mode : default(RequestMode)))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status != 0 ? src.Status : default(RequestStatuses)))
+            .ForMember(dest => dest.RequestSkill, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
+            .ReverseMap();
 
             CreateMap<AddApplyViewModel, Apply>()
                 .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))

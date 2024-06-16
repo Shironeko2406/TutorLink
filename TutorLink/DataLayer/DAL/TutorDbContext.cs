@@ -27,7 +27,7 @@ public partial class TutorDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        //optionsBuilder.UseSqlServer("Server=localhost;Database=TutorLinkDB;User ID=SA;Password=Trongtin1701;TrustServerCertificate=true");
+        //optionsBuilder.UseSqlServer("Server=tcp:mytutorlink.database.windows.net,1433;Initial Catalog=TutorLinkDB;Persist Security Info=False;User ID=tintruong;Password=Trongtin1701;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;");
     }
 }
 
@@ -176,7 +176,7 @@ public  partial class TutorDbContext {
                 .HasMaxLength(100)
                 .IsRequired();
             entity.Property(p => p.PreferredTime)
-                .HasMaxLength(10)
+                .HasMaxLength(100)
                 .IsRequired();
             entity.Property(p => p.Mode)
                 .IsRequired();
@@ -429,6 +429,7 @@ public  partial class TutorDbContext {
 
         #endregion
 
+        //Data Seeding
         #region Role Data Seeding
 
         modelBuilder.Entity<Role>().HasData(new Role()
@@ -530,6 +531,45 @@ public  partial class TutorDbContext {
         {
             SkillId = 5,
             SkillName = "Spanish"
+        });
+        #endregion
+        
+        #region Account Data Seeding
+        modelBuilder.Entity<Account>().HasData(new Account()
+        {
+            AccountId = Guid.NewGuid(),
+            Username = "admin",
+            Password = "admin123",
+            Fullname = "ADMIN",
+            Email = "admin@gmail.com",
+            Phone = "0945677876",
+            Address = "Ho Chi Minh, Viet Name",
+            Gender = UserGenders.Male,
+            RoleId = 1
+        });
+        modelBuilder.Entity<Account>().HasData(new Account()
+        {
+            AccountId = Guid.NewGuid(),
+            Username = "staff",
+            Password = "staff123",
+            Fullname = "STAFF",
+            Email = "staff@gmail.com",
+            Phone = "0912377890",
+            Address = "Ho Chi Minh, Viet Name",
+            Gender = UserGenders.Female,
+            RoleId = 2
+        });
+        modelBuilder.Entity<Account>().HasData(new Account()
+        {
+            AccountId = Guid.NewGuid(),
+            Username = "parent1",
+            Password = "@123",
+            Fullname = "Tran Van A",
+            Email = "vana@gmail.com",
+            Phone = "0978988768",
+            Address = "Ho Chi Minh, Viet Name",
+            Gender = UserGenders.Female,
+            RoleId = 4
         });
         #endregion
     }
