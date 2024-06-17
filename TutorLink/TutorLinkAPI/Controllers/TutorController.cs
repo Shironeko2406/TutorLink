@@ -28,7 +28,7 @@ public class TutorController : ControllerBase
     }
     #endregion
 
-        #region Get Tutor By Id
+    #region Get Tutor By Id
         [HttpGet]
         [Route("tutor-by-id/{id}")]
         public async Task<IActionResult> GetTutorById(Guid id)
