@@ -5,15 +5,19 @@ using DataLayer.Entities;
 using DataLayer.DAL.Repositories;
 using System.Linq;
 using TutorLinkAPI.BusinessLogics.IServices;
+using DataLayer.DAL;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
     public class ApplyServices : IApplyService
     {
         private readonly IGenericRepository<Apply> _applyRepository;
+        private readonly TutorDbContext _context;
 
-        public ApplyServices(IGenericRepository<Apply> applyRepository)
+
+        public ApplyServices(IGenericRepository<Apply> applyRepository, TutorDbContext context)
         {
+            _context= context;
             _applyRepository = applyRepository;
         }
 
@@ -31,8 +35,9 @@ namespace TutorLinkAPI.BusinessLogics.Services
                 TutorId = tutorId,
                 Status = ApplyStatuses.Pending
             };
-
-            return _applyRepository.Add(newApply);
+            _context.Applies.Add(newApply);
+            _context.SaveChanges();
+            return newApply;
         }
 
         public void UpdateApplyStatus(Guid applyId, UpdateApplyViewModel model)
