@@ -122,10 +122,13 @@ namespace TutorLinkAPI
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: CORS_CONFIG,
-                    builder => builder.AllowAnyOrigin()
+                    builder => builder
+                        .WithOrigins("http://localhost:5173") 
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials()); 
             });
+
             #endregion
 
             var app = builder.Build();
