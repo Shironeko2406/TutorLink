@@ -34,7 +34,9 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Address, opt => opt.Condition(src => src.Address != null && src.Address != "string"))
             .ReverseMap();
 
-
+        //Account
+        CreateMap<AddAccountViewModel, Account>().ReverseMap();
+        CreateMap<AccountViewModel, Account>().ReverseMap();
 
         //Qualification
         CreateMap<QualificationViewModel, Qualification>().ReverseMap();

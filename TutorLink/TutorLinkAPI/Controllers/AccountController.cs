@@ -1,6 +1,7 @@
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
+using TutorLinkAPI.ViewModel;
 
 namespace TutorLinkAPI.Controllers;
 
@@ -13,34 +14,21 @@ public class AccountController : Controller
     {
     _accountService = accountService; 
     }
-
-    [HttpPost("add")]
-    public IActionResult AddNewAccount([FromBody] AccountRequestModel model)
+    
+    #region Add New Account
+    [HttpPost]
+    [Route("add-account")]
+    public async Task<IActionResult> AddNewAccount(AddAccountViewModel newAccount)
     {
-        var newAccount = _accountService.AddNewAccount(
-            model.Username,
-            model.Password,
-            model.Fullname,
-            model.Email,
-            model.Phone,
-            model.Address,
-            model.Gender
-        );
-
-        var response = new
+        var account = await _accountService.AddNewAccount(newAccount);
+        if (account != null)
         {
-            newAccount.AccountId,
-            newAccount.Username,
-            newAccount.Fullname,
-            newAccount.Email,
-            newAccount.Phone,
-            newAccount.Address,
-            newAccount.Gender,
-        };
+            return Ok(account);
+        }
 
-        return Ok(response);
+        return BadRequest("Failed to add new account.");
     }
-
+    #endregion
 
     #region Get list
     [HttpGet("list")]
