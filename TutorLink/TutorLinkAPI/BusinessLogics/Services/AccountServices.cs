@@ -1,8 +1,10 @@
+using AutoMapper;
 using DataLayer.DAL;
 using DataLayer.DAL.Repositories;
 using DataLayer.Entities;
 using Microsoft.Identity.Client;
 using TutorLinkAPI.BusinessLogics.IServices;
+using TutorLinkAPI.ViewModel;
 
 namespace TutorLinkAPI.BusinessLogics.Services;
 
@@ -10,11 +12,15 @@ public class AccountServices : IAccountService
 {
     private readonly AccountRepository _accountRepository;
     private readonly TutorDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly RoleRepository _roleRepository;
 
-    public AccountServices(AccountRepository accountRepository, TutorDbContext context)
+    public AccountServices(AccountRepository accountRepository, TutorDbContext context, IMapper mapper, RoleRepository roleRepository)
     {
         _accountRepository = accountRepository;
         _context = context;
+        _mapper = mapper;
+        _roleRepository = roleRepository;
     }
 
     #region Using entity
@@ -30,6 +36,7 @@ public class AccountServices : IAccountService
         return account;
     }
     #endregion
+    /*
     public Account AddNewAccount(string username, string password, string fullname, string email, string phone, string address, UserGenders gender)
     {
         var newAccount = new Account
@@ -49,8 +56,27 @@ public class AccountServices : IAccountService
 
         return newAccount;
     }
+    */
+    public async Task<AccountViewModel> AddNewAccount(AddAccountViewModel accountViewModel)
+    {
+        try
+        {
+            var newAccount = _mapper.Map<Account>(accountViewModel);
+            newAccount.AccountId = Guid.NewGuid();
+            var accountRole = await _roleRepository.GetSingleWithAsync(a => a.RoleId == 4);
+            newAccount.RoleId = accountRole.RoleId;
 
-
+            await _accountRepository.AddSingleWithAsync(newAccount);
+            await _accountRepository.SaveChangesAsync();
+            
+            var accountViewModelResult = _mapper.Map<AccountViewModel>(newAccount);
+            return accountViewModelResult;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while adding the account.", ex);
+        }
+    }
     private string GetFullExceptionMessage(Exception ex)
     {
         if (ex == null) return string.Empty;
