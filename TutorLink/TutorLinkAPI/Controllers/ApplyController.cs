@@ -1,11 +1,12 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
 
 namespace TutorLinkAPI.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ApplyController : ControllerBase
     {
@@ -16,43 +17,46 @@ namespace TutorLinkAPI.Controllers
             _applyService = applyService;
         }
 
-        [HttpPost("add")]
-        public IActionResult AddNewApply(Guid postId, Guid tutorId)
+        [HttpPost("{tutorId}/{postId}")]
+        public async Task<IActionResult> AddApply(Guid tutorId, Guid postId, [FromBody] AddApplyViewModel model)
         {
-            var newApply = _applyService.AddNewApply(postId, tutorId);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var response = new
+            try
             {
-                newApply.ApplyId,
-                newApply.PostId,
-                newApply.TutorId,
-                newApply.Status
-            };
-
-            return Ok(response);
+                var apply = await _applyService.AddNewApply(tutorId, postId, model);
+                return Ok(apply);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpGet("get/{applyId}")]
+        [HttpGet("{applyId}")]
         public IActionResult GetApplyById(Guid applyId)
         {
-            var apply = _applyService.GetApplyById(applyId);
-            if (apply == null)
-                return NotFound("Apply not found.");
-
-            var response = new
+            try
             {
-                apply.ApplyId,
-                apply.PostId,
-                apply.TutorId,
-                apply.Status
-            };
+                var apply = _applyService.GetApplyById(applyId);
+                if (apply == null)
+                    return NotFound("Apply not found.");
 
-            return Ok(response);
+                return Ok(apply);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpPut("update/{applyId}")]
+        [HttpPut("{applyId}")]
         public IActionResult UpdateApplyStatus(Guid applyId, [FromBody] UpdateApplyViewModel model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             try
             {
                 _applyService.UpdateApplyStatus(applyId, model);
@@ -60,11 +64,11 @@ namespace TutorLinkAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Failed to update apply status: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
         }
 
-        [HttpDelete("delete/{applyId}")]
+        [HttpDelete("{applyId}")]
         public IActionResult DeleteApply(Guid applyId)
         {
             try
@@ -74,22 +78,36 @@ namespace TutorLinkAPI.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest($"Failed to delete apply: {ex.Message}");
+                return StatusCode(500, ex.Message);
             }
         }
 
         [HttpGet("tutor/{tutorId}")]
         public IActionResult GetAppliesByTutorId(Guid tutorId)
         {
-            var applies = _applyService.GetAppliesByTutorId(tutorId);
-            return Ok(applies);
+            try
+            {
+                var applies = _applyService.GetAppliesByTutorId(tutorId);
+                return Ok(applies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
-        [HttpGet("list")]
+        [HttpGet]
         public IActionResult GetAllApplies()
         {
-            var applies = _applyService.GetAllApplies();
-            return Ok(applies);
+            try
+            {
+                var applies = _applyService.GetAllApplies();
+                return Ok(applies);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
     }
 }

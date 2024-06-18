@@ -6,13 +6,10 @@ namespace TutorLinkAPI.ViewModel
 {
     public class AddApplyViewModel
     {
-        [Required]
         public Guid PostId { get; set; }
-
-        [Required]
         public Guid TutorId { get; set; }
 
-        [Required]
+    [Required]
         public ApplyStatuses Status { get; set; }
     }
 }

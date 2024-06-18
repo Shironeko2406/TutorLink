@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
-using TutorLinkAPI.ViewModel;
+using System.Threading.Tasks;
 using DataLayer.Entities;
+using TutorLinkAPI.ViewModel;
 
 namespace TutorLinkAPI.BusinessLogics.IServices
 {
     public interface IApplyService
     {
+        Task<ApplyViewModel> AddNewApply(Guid tutorId, Guid postId, AddApplyViewModel applyViewModel);
         Apply GetApplyById(Guid applyId);
-        Apply AddNewApply(Guid postId, Guid tutorId);
         void UpdateApplyStatus(Guid applyId, UpdateApplyViewModel model);
         void DeleteApply(Guid applyId);
-        List<Apply> GetAppliesByTutorId(Guid tutorId);
-        List<Apply> GetAllApplies();
+        IEnumerable<Apply> GetAppliesByTutorId(Guid tutorId);
+        IEnumerable<Apply> GetAllApplies();
     }
 }

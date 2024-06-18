@@ -1,68 +1,98 @@
 using System;
 using System.Collections.Generic;
-using TutorLinkAPI.ViewModel;
+using System.Threading.Tasks;
+using AutoMapper;
 using DataLayer.Entities;
 using DataLayer.DAL.Repositories;
-using System.Linq;
 using TutorLinkAPI.BusinessLogics.IServices;
+using TutorLinkAPI.ViewModel;
 using DataLayer.DAL;
 
 namespace TutorLinkAPI.BusinessLogics.Services
 {
     public class ApplyServices : IApplyService
     {
-        private readonly IGenericRepository<Apply> _applyRepository;
+        private readonly ApplyRepository _applyRepository;
+        private readonly IMapper _mapper;
         private readonly TutorDbContext _context;
+        private readonly TutorRepository _tutorRepository;
+        private readonly PostRequestRepository _postRequestRepository;
 
-
-        public ApplyServices(IGenericRepository<Apply> applyRepository, TutorDbContext context)
+        public ApplyServices(
+            ApplyRepository applyRepository,
+            IMapper mapper,
+            TutorDbContext context,
+            TutorRepository tutorRepository,
+            PostRequestRepository postRequestRepository)
         {
-            _context= context;
             _applyRepository = applyRepository;
+            _mapper = mapper;
+            _context = context;
+            _tutorRepository = tutorRepository;
+            _postRequestRepository = postRequestRepository;
+        }
+
+        public async Task<ApplyViewModel> AddNewApply(Guid tutorId, Guid postId, AddApplyViewModel applyViewModel)
+        {
+            var tutor = _tutorRepository.GetByIdAsync(tutorId);
+            if (tutor == null)
+                throw new Exception("Tutor not found.");
+
+            var postRequest = _postRequestRepository.GetByIdAsync(postId);
+            if (postRequest == null)
+                throw new Exception("Post request not found.");
+
+            var newApply = _mapper.Map<Apply>(applyViewModel);
+            newApply.ApplyId = Guid.NewGuid();
+            newApply.TutorId = tutorId;
+            newApply.PostId = postId;
+
+            await _applyRepository.AddSingleWithAsync(newApply);
+            await _applyRepository.SaveChangesAsync();
+
+            return _mapper.Map<ApplyViewModel>(newApply);
         }
 
         public Apply GetApplyById(Guid applyId)
         {
-            return _applyRepository.Get(a => a.ApplyId == applyId);
-        }
-
-        public Apply AddNewApply(Guid postId, Guid tutorId)
-        {
-            var newApply = new Apply
-            {
-                ApplyId = Guid.NewGuid(),
-                PostId = postId,
-                TutorId = tutorId,
-                Status = ApplyStatuses.Pending
-            };
-            _context.Applies.Add(newApply);
-            _context.SaveChanges();
-            return newApply;
+            var apply = _applyRepository.GetById(applyId);
+            return apply;
         }
 
         public void UpdateApplyStatus(Guid applyId, UpdateApplyViewModel model)
         {
-            var apply = _applyRepository.Get(a => a.ApplyId == applyId);
+            var apply = _applyRepository.GetById(applyId);
             if (apply == null)
                 throw new Exception("Apply not found.");
 
-            apply.Status = model.Status;
+            _mapper.Map(model, apply);
+
             _applyRepository.Update(apply);
+            _applyRepository.SaveChanges();
         }
 
         public void DeleteApply(Guid applyId)
         {
-            _applyRepository.Delete(applyId);
+            var apply = _applyRepository.GetById(applyId);
+            if (apply != null)
+            {
+                _applyRepository.Delete(apply.ApplyId);
+                _applyRepository.SaveChanges();
+            }
+            else
+            {
+                throw new Exception("Apply not found.");
+            }
         }
 
-        public List<Apply> GetAppliesByTutorId(Guid tutorId)
+        public IEnumerable<Apply> GetAppliesByTutorId(Guid tutorId)
         {
-            return _applyRepository.GetList(a => a.TutorId == tutorId).ToList();
+            return _applyRepository.GetList(a => a.TutorId == tutorId);
         }
 
-        public List<Apply> GetAllApplies()
+        public IEnumerable<Apply> GetAllApplies()
         {
-            return _applyRepository.GetAll().ToList();
+            return _applyRepository.GetAll();
         }
     }
 }

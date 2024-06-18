@@ -11,4 +11,6 @@ public class AccountViewModel
     public string Phone { get; set; }
     public string Address { get; set; }
     public UserGenders Gender { get; set; }
+    public virtual ICollection<PostRequest>? PostRequests { get; set; }
+
 }
