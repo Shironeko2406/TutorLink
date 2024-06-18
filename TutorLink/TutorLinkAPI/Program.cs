@@ -1,14 +1,13 @@
 using AutoMapper;
-using DataLayer.DAL.Repositories;
 using DataLayer.DAL;
+using DataLayer.DAL.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.BusinessLogics.Services;
+using System.Text;
 
 namespace TutorLinkAPI
 {
@@ -50,7 +49,6 @@ namespace TutorLinkAPI
                     }
                 });
             });
-
             // Configure JWT authentication
             var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
             var securityKey = jwtSettingsSection["SecurityKey"];
@@ -75,18 +73,8 @@ namespace TutorLinkAPI
                     ValidAudience = audience,
                     ClockSkew = TimeSpan.Zero
                 };
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = context =>
-                    {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            context.Response.Headers.Add("Token-Expired", "true");
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
             });
+
 
             builder.Services.AddDbContext<TutorDbContext>(options =>
             {
@@ -94,10 +82,12 @@ namespace TutorLinkAPI
             });
 
             #region Repositories
-            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddScoped<AccountRepository>();
             builder.Services.AddScoped<ApplyRepository>();
             builder.Services.AddScoped<AppointmentFeedbackRepository>();
+            //builder.Services.AddScoped<AppointmentRepository>();
+            //builder.Services.AddScoped<ParentFeedbackRepository>();
             builder.Services.AddScoped<PostRequestRepository>();
             builder.Services.AddScoped<QualificationRepository>();
             builder.Services.AddScoped<RoleRepository>();
@@ -113,6 +103,8 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<IAccountService, AccountServices>();
             builder.Services.AddScoped<IApplyService, ApplyServices>();
             builder.Services.AddScoped<IAppointmentFeedback, AppoitmentFeedbackServices>();
+            //builder.Services.AddScoped<IAppointmentService, AppointmentServices>();
+            //builder.Services.AddScoped<IParentFeedbackService, ParentFeedbackServices>();
             builder.Services.AddScoped<IPostRequestService, PostRequestServices>();
             builder.Services.AddScoped<IQualificationService, QualificationServices>();
             builder.Services.AddScoped<IRoleService, RoleServices>();
@@ -130,23 +122,16 @@ namespace TutorLinkAPI
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(name: CORS_CONFIG,
-                    builder => builder.AllowAnyOrigin()
+                    builder => builder
+                        .WithOrigins("http://localhost:5173")
                         .AllowAnyMethod()
-                        .AllowAnyHeader());
+                        .AllowAnyHeader()
+                        .AllowCredentials());
             });
+
             #endregion
 
             var app = builder.Build();
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
-            }
 
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -154,7 +139,6 @@ namespace TutorLinkAPI
             app.UseCors(CORS_CONFIG);
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
