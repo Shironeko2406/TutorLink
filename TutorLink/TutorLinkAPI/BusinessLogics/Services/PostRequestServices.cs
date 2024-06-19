@@ -100,6 +100,29 @@ public class PostRequestServices : IPostRequestService
         }
     }
 
+    public async Task<List<PostRequestViewModel>> GetPostRequestByUserLogin(ClaimsPrincipal user)
+    {
+        try
+        {
+            var userIdClaim = user.FindFirst("UserId");
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId))
+            {
+                throw new ArgumentException("User ID claim not found or invalid.");
+            }
+
+            var postRequests= await _postRequestRepository.GetAllWithAsync();
+            var postRequestViewModel= _mapper.Map<List<PostRequestViewModel>>(postRequests);
+            var userPostRequest = postRequestViewModel.Where(p => p.CreatedBy == userId) .ToList();
+
+            return userPostRequest;
+        }
+        catch (Exception e)
+        {
+
+            throw new Exception("An error occurred while getting post requests for the user.", e);
+        }
+    }
+
     /*public async Task DeletePostRequest(Guid id)
     {
         var postRequest = await _postRequestRepository.GetByIdAsync(id);

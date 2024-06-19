@@ -10,5 +10,6 @@ public interface IPostRequestService
     Task<AddPostRequestViewModel> UpdatePostRequest(Guid postId, AddPostRequestViewModel updatedPost, ClaimsPrincipal user);
 
     Task<List<PostRequestViewModel>> GetPostRequestByUserId(Guid userId);
+    Task<List<PostRequestViewModel>> GetPostRequestByUserLogin(ClaimsPrincipal user);
     //Task DeletePostRequest(Guid id);
 }
