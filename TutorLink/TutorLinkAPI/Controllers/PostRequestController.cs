@@ -39,7 +39,7 @@ public class PostRequestController : ControllerBase
         var postRequests = await _postRequestService.GetPostRequestById(id);
         if (postRequests == null)
         {
-            return BadRequest("Failed to retrieve post requests list.");
+            return BadRequest("Failed to retrieve post request");
         }
 
         return Ok(postRequests);
