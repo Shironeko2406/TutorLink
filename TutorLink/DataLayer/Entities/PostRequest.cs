@@ -33,7 +33,8 @@ public enum RequestStatuses
 {
     Pending,
     Available,
-    Closed
+    Closed,
+    Unactived
 }
 
 public enum RequestMode

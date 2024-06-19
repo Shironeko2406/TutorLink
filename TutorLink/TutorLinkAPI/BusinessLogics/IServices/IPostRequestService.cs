@@ -12,5 +12,5 @@ public interface IPostRequestService
 
     Task<List<PostRequestViewModel>> GetPostRequestByUserId(Guid userId);
     Task<List<PostRequestViewModel>> GetPostRequestByUserLogin(ClaimsPrincipal user);
-    //Task DeletePostRequest(Guid id);
+    Task DeletePostRequest(Guid id, ClaimsPrincipal user);
 }

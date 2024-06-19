@@ -22,7 +22,8 @@ public class PostRequestServices : IPostRequestService
         try
         {
             var postsRequests = await _postRequestRepository.GetAllWithAsync();
-            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(postsRequests);
+            var activePostRequests = postsRequests.Where(pr => pr.Status != RequestStatuses.Unactived);
+            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(activePostRequests);
             return postRequestViewModel;
         }
         catch (Exception ex)
@@ -139,19 +140,33 @@ public class PostRequestServices : IPostRequestService
         catch (Exception e)
         {
 
-            throw new Exception("An error occurred while getting  post requests.", e);
+            throw new Exception("An error occurred while getting post requests.", e);
         }
     }
 
-    /*public async Task DeletePostRequest(Guid id)
+    public async Task DeletePostRequest(Guid id, ClaimsPrincipal user)
     {
-        var postRequest = await _postRequestRepository.GetByIdAsync(id);
-        if (postRequest == null)
+        try
         {
-            throw new ArgumentException("Post request not found.");
-        }
+            var existedPostRequest = await _postRequestRepository.GetByIdAsync(id);
+            if (existedPostRequest == null)
+            {
+                throw new ArgumentException("PostRequest not found with this ID");
+            }
 
-        await _postRequestRepository.DeleteAsync(postRequest.PostId);
+            var userIdClaim = user.FindFirst("UserId");
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId) || existedPostRequest.CreatedBy != userId)
+            {
+                throw new UnauthorizedAccessException("User does not have permission to delete this PostRequest.");
+            }
+
+            existedPostRequest.Status = RequestStatuses.Unactived;
+            await _postRequestRepository.SaveChangesAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error deleting PostRequest: " + e.Message);
+        }
     }
-    */
+
 }
