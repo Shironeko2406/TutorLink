@@ -111,6 +111,7 @@ public class PostRequestController : ControllerBase
     [Route("post-request-postId/{id}")]
     public async Task<IActionResult> DeletePostRequest(Guid id)
     {
+        await _postRequestService.DeletePostRequest(id, User);
         return Ok("Successfully deleted post request");
     }
     #endregion
