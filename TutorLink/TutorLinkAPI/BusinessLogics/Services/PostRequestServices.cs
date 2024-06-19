@@ -123,6 +123,26 @@ public class PostRequestServices : IPostRequestService
         }
     }
 
+    public async Task<PostRequestViewModel> GetPostRequestById(Guid id)
+    {
+        try
+        {
+            var postRequest = await _postRequestRepository.GetByIdAsync(id);
+            if (postRequest == null)
+            {
+                throw new Exception($"Post request with ID {id} not found.");
+            }
+            var postRequestModel = _mapper.Map<PostRequestViewModel>(postRequest);
+           
+            return postRequestModel;
+        }
+        catch (Exception e)
+        {
+
+            throw new Exception("An error occurred while getting  post requests.", e);
+        }
+    }
+
     /*public async Task DeletePostRequest(Guid id)
     {
         var postRequest = await _postRequestRepository.GetByIdAsync(id);

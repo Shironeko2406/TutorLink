@@ -30,7 +30,22 @@ public class PostRequestController : ControllerBase
         return Ok(postRequests);
     }
     #endregion
-    
+
+    #region Get Post Request By Id
+    [HttpGet]
+    [Route("post-request-id/{id}")]
+    public async Task<IActionResult> GetPostRequestById(Guid id)
+    {
+        var postRequests = await _postRequestService.GetPostRequestById(id);
+        if (postRequests == null)
+        {
+            return BadRequest("Failed to retrieve post request");
+        }
+
+        return Ok(postRequests);
+    }
+    #endregion
+
     #region Get Post Request By UserId
     [HttpGet]
     [Route("post-request-user/{id}")]
