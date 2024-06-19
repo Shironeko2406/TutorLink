@@ -6,6 +6,7 @@ namespace TutorLinkAPI.BusinessLogics.IServices;
 public interface IPostRequestService
 {
     Task<List<PostRequestViewModel>> GetAllPostRequests();
+    Task<PostRequestViewModel> GetPostRequestById(Guid id);
     Task<AddPostRequestViewModel> AddNewPostRequest(AddPostRequestViewModel newPost, ClaimsPrincipal user);
     Task<AddPostRequestViewModel> UpdatePostRequest(Guid postId, AddPostRequestViewModel updatedPost, ClaimsPrincipal user);
 
