@@ -11,13 +11,14 @@ public class Tutor : IUser
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Address { get; set; }
+    public string? AvatarUrl { get; set; }
     public TutorGenders Gender { get; set; }
     public int RoleId { get; set; }
     
     public virtual Role? Role { get; set; }
     public virtual Wallet? Wallet { get; set; }
-    public virtual ICollection<Apply> Applies { get; set; }
-    public virtual ICollection<Qualification> Qualifications { get; set; }
+    public virtual ICollection<Apply>? Applies { get; set; }
+    public virtual ICollection<Qualification>? Qualifications { get; set; }
     public virtual ICollection<AppointmentFeedback>? AppointmentFeedbacks { get; set; }
 
     Guid IUser.UserId => TutorId;
