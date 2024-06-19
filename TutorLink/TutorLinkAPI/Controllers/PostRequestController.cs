@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
@@ -44,7 +45,23 @@ public class PostRequestController : ControllerBase
         return Ok(postRequest);
     }
     #endregion
-    
+
+    #region Get Post Request By User Login
+    [HttpGet]
+    [Route("post-request-user-login")]
+    [Authorize]
+    public async Task<IActionResult> GetPostRequestByUserLogin()
+    {
+        var postRequest = await _postRequestService.GetPostRequestByUserLogin(User);
+        if (postRequest == null)
+        {
+            return BadRequest("Failed to get post request of user");
+        }
+
+        return Ok(postRequest);
+    }
+    #endregion
+
     #region Add New Post Request
     [HttpPost]
     [Route("add-post-request")]
