@@ -68,6 +68,7 @@ namespace TutorLinkAPI.BusinessLogics.Helper
                 .ReverseMap();
 
             // Apply
+            CreateMap<Apply, ApplyViewModel>().ReverseMap();
             CreateMap<AddApplyViewModel, Apply>()
                 .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
                 .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
