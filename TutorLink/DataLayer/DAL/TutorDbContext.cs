@@ -195,7 +195,7 @@ public  partial class TutorDbContext {
             entity.HasOne(o => o.Account)
                 .WithMany(m => m.PostRequests)
                 .HasForeignKey(f => f.CreatedBy)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         });
         
         #endregion
