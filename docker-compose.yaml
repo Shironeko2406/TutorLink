@@ -5,7 +5,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     restart: always
     environment:
-      MSSQL_SA_PASSWORD: Trongtin170112069898
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Express"
     ports:
