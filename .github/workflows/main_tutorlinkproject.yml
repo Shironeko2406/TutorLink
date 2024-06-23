@@ -34,7 +34,6 @@ jobs:
     needs: build-image-with-docker
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-      MSSQL_SA_PASSWORD: ${{secrets.MSSQL_SA_PASSWORD}}
     steps:
     - name: Checkout Develop
       uses: actions/checkout@v3
