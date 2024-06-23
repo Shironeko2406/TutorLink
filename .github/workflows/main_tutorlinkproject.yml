@@ -45,6 +45,7 @@ jobs:
         password: ${{secrets.DOCKER_PASSWORD}}
     - name: Stop API
       run: docker compose -p tutor-link-test down tutor-link-api
+      continue-on-error: true
     - name: Clean Old Image
       run: docker rmi ${{secrets.DOCKER_USERNAME}}/tutor-link-api:latest 
       continue-on-error: true
