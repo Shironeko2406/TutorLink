@@ -1,16 +1,5 @@
 version: '3.8'
 services:
-  sql-server-tutor:
-    container_name: sql-server-tutor
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    restart: always
-    environment:
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
-      ACCEPT_EULA: "Y"
-      MSSQL_PID: "Express"
-    ports:
-      - 1433:1433
-
   tutor-link-api:
     container_name: tutor-link-api 
     image: ${DOCKER_USERNAME}/tutor-link-api:latest
