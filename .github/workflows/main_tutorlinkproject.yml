@@ -1,6 +1,3 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
 name: Build and deploy ASP.Net Core app to Railway - tutorlinkproject
 
 on:
@@ -26,13 +23,13 @@ jobs:
         run: dotnet build --configuration Release "./TutorLink/TutorLink.sln"
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp "./TutorLink/TutorLink.sln"
+        run: dotnet publish -c Release -o ${{runner.workspace}}/myapp "./TutorLink/TutorLink.sln"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{runner.workspace}}/myapp
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,9 +43,8 @@ jobs:
       - name: Deploy to Railway
         uses: railwayapp-io/railway-action@master
         with:
-          railway_token: da815ca4-30b3-4087-a081-845f2bd343a6
-          project_id: 7a5869d1-08d3-4e6a-9099-853fc0daee1e
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          project_id: ${{ secrets.RAILWAY_PROJECT_ID }}
           environment: production
-          build_command: dotnet publish -c Release -o out
+          build_command: dotnet publish -c Release -o out ./TutorLink/TutorLink.sln
           start_command: dotnet out/TutorLink.dll
-          
