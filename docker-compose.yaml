@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  tutor-link-api:
+    container_name: tutor-link-api 
+    image: ${DOCKER_USERNAME}/tutor-link-api:latest
+    restart: always
+    ports:
+      - 5169:5169
+      - 7164:7164
+      - 80:80
+      - 443:443
