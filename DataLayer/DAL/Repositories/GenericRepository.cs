@@ -22,7 +22,7 @@ public interface IGenericRepository<T> where T : class
     int SaveChanges();
     void Dispose();
     #endregion
-    
+
     #region Async
     Task<int> CountAsync(Expression<Func<T, bool>> expression = null);
     Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);
@@ -54,7 +54,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _dbSet = context.Set<T>();
     }
-    
+
     #region Unasync method
     public virtual ICollection<T> GetAll()
     {
@@ -129,14 +129,14 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             throw new Exception(ex.Message);
         }
     }
-    
+
     public void Dispose()
     {
         _context.Dispose();
     }
     #endregion
-    
-    
+
+
     #region Async Methods
     public async Task UpdateWithAsync(T entity)
     {
@@ -157,7 +157,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
             throw new Exception(ex.Message);
         }
     }
-    
+
     public IEnumerable<T> GetAllTest()
     {
         return _context.Set<T>().AsNoTracking().ToList();
@@ -224,7 +224,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
 
         return await query.Where(predicate).ToListAsync();
     }
-    
+
     public virtual async Task DeleteAsync(Guid id)
     {
         var entity = await _dbSet.FindAsync(id);

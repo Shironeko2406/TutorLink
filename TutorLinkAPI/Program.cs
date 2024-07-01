@@ -80,7 +80,7 @@ namespace TutorLinkAPI
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Local"));
             });
-            
+
             #region Repositories
             builder.Services.AddScoped(typeof(GenericRepository<>));
             builder.Services.AddScoped<AccountRepository>();
@@ -98,10 +98,10 @@ namespace TutorLinkAPI
             builder.Services.AddScoped<WalletTransactionRepository>();
             builder.Services.AddScoped<DepositRepository>();
             #endregion
-            
+
             #region Interfaces + Services
             builder.Services.AddScoped<IAccountService, AccountServices>();
-            builder.Services.AddScoped<IApplyService, ApplyServiceServices>();
+            builder.Services.AddScoped<IApplyService, ApplyServices>();
             builder.Services.AddScoped<IAppointmentFeedback, AppoitmentFeedbackServices>();
             //builder.Services.AddScoped<IAppointmentService, AppointmentServices>();
             //builder.Services.AddScoped<IParentFeedbackService, ParentFeedbackServices>();
