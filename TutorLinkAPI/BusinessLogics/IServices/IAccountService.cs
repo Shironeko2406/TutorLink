@@ -12,7 +12,7 @@ namespace TutorLinkAPI.BusinessLogics.IServices
 
         IEnumerable<Account> GetAllAccounts();
         Account GetAccountById(Guid accountId);
-        void UpdateAccount(Guid id, string username, string password, string fullname, string email, string phone, string address, UserGenders gender);
+        void UpdateAccount(Guid id, string username, string password, string fullname, string email, string phone, string address, string? AvatarUrl, UserGenders gender);
         void DeleteAccount(Guid accountId);
         Account GetAccountEntityByUsername(string username);
         Account GetAccountEntityByUserId(Guid userId);
