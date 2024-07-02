@@ -14,8 +14,8 @@ public class PostRequest
     public Guid CreatedBy { get; set; }
     public DateTime CreatedDate { get; set; }
     
-    public virtual ICollection<Apply> Applies { get; set; }
-    public virtual ICollection<AppointmentFeedback> AppointmentFeedbacks { get; set; }
+    public virtual ICollection<Apply>? Applies { get; set; }
+    public virtual ICollection<AppointmentFeedback>? AppointmentFeedbacks { get; set; }
     public virtual Account? Account { get; set; }
     
     
