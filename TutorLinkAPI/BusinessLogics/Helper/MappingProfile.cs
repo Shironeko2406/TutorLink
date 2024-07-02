@@ -64,5 +64,17 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.RequestSkill, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
             .ReverseMap();
 
+
+        // Apply
+        CreateMap<Apply, ApplyViewModel>().ReverseMap();
+        CreateMap<AddApplyViewModel, Apply>()
+            .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
+            .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status));
+
+        CreateMap<UpdateApplyViewModel, Apply>()
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ReverseMap();
+
     }
 }
