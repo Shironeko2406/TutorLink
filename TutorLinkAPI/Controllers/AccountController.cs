@@ -62,7 +62,9 @@ public class AccountController : Controller
             model.Email,
             model.Phone,
             model.Address,
+            model.Address,
             model.Gender
+            
         );
         return Ok("Account updated successfully.");
     }
@@ -99,6 +101,7 @@ public class AccountUpdateModel
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Address { get; set; }
+    public string? AvatarUrl { get; set; }
     public UserGenders Gender { get; set; }
 }
 #endregion

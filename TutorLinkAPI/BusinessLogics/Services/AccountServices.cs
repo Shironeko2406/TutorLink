@@ -57,6 +57,7 @@ public class AccountServices : IAccountService
         return newAccount;
     }
     */
+    #region Add new account
     public async Task<AccountViewModel> AddNewAccount(AddAccountViewModel accountViewModel)
     {
         try
@@ -77,6 +78,7 @@ public class AccountServices : IAccountService
             throw new Exception("An error occurred while adding the account.", ex);
         }
     }
+    #endregion
     private string GetFullExceptionMessage(Exception ex)
     {
         if (ex == null) return string.Empty;
@@ -117,7 +119,7 @@ public class AccountServices : IAccountService
     #endregion
 
     #region Update account
-    public void UpdateAccount(Guid id, string username, string password, string fullname, string email, string phone, string address, UserGenders gender)
+    public void UpdateAccount(Guid id, string username, string password, string fullname, string email, string phone, string address, string? AvatarUrl, UserGenders gender)
     {
         var account = _context.Accounts.Find(id);
         if (account == null)
@@ -129,6 +131,7 @@ public class AccountServices : IAccountService
         account.Email = email;
         account.Phone = phone;
         account.Address = address;
+        account.AvatarUrl = AvatarUrl;
         account.Gender = gender;
 
         _context.SaveChanges();
