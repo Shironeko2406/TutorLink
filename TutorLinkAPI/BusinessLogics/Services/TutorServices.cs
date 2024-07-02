@@ -119,6 +119,8 @@ public class TutorServices : ITutorService
             if (existingTutor != null)
             {
                 _mapper.Map(tutorViewModel, existingTutor);
+
+                await _tutorRepository.UpdateWithAsync(existingTutor);
                 await _tutorRepository.SaveChangesAsync();
 
                 return _mapper.Map<UpdateTutorViewModel>(existingTutor);
