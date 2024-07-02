@@ -6,7 +6,7 @@ public class Apply
     public Guid PostId { get; set; }
     public Guid TutorId { get; set; }
     public ApplyStatuses Status { get; set; }
-    
+
     public virtual Tutor? Tutor { get; set; }
     public virtual PostRequest? PostRequest { get; set; }
 }
