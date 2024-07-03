@@ -1,0 +1,15 @@
+/Users/zunnie/Desktop/TutorLink/DataLayer/bin/Debug/net7.0/DataLayer.deps.json
+/Users/zunnie/Desktop/TutorLink/DataLayer/bin/Debug/net7.0/DataLayer.runtimeconfig.json
+/Users/zunnie/Desktop/TutorLink/DataLayer/bin/Debug/net7.0/DataLayer.dll
+/Users/zunnie/Desktop/TutorLink/DataLayer/bin/Debug/net7.0/DataLayer.pdb
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.csproj.AssemblyReference.cache
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.GeneratedMSBuildEditorConfig.editorconfig
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.AssemblyInfoInputs.cache
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.AssemblyInfo.cs
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.csproj.CoreCompileInputs.cache
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.sourcelink.json
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.dll
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/refint/DataLayer.dll
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.pdb
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/DataLayer.genruntimeconfig.cache
+/Users/zunnie/Desktop/TutorLink/DataLayer/obj/Debug/net7.0/ref/DataLayer.dll
