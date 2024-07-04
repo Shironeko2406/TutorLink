@@ -9,5 +9,6 @@ namespace TutorLinkAPI.ViewModel
         public Guid PostId { get; set; }
         public Guid TutorId { get; set; }
         public ApplyStatuses Status { get; set; }
+        public string Fullname { get; set; }
     }
 }

@@ -15,7 +15,8 @@ public class PostRequestViewModel
     public string RequestSkill { get; set; }
     public Guid CreatedBy { get; set; }
     public string CreatedByUsername { get; set; }
+    public string? AvatarUrl { get; set; }
     public DateTime CreatedDate { get; set; }
     
-    public virtual ICollection<Apply> Applies { get; set; }
+    public virtual ICollection<ApplyViewModel> Applies { get; set; }
 }

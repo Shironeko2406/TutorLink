@@ -10,11 +10,13 @@ namespace TutorLinkAPI.BusinessLogics.Services;
 public class PostRequestServices : IPostRequestService
 {
     private readonly PostRequestRepository _postRequestRepository;
+    private readonly ApplyRepository _applyRepository;
     private readonly IMapper _mapper;
 
-    public PostRequestServices(PostRequestRepository postRequestRepository, IMapper mapper)
+    public PostRequestServices(PostRequestRepository postRequestRepository, ApplyRepository applyRepository, IMapper mapper)
     {
         _postRequestRepository = postRequestRepository;
+        _applyRepository = applyRepository;
         _mapper = mapper;
     }
     public async Task<List<PostRequestViewModel>> GetAllPostRequests()
@@ -22,9 +24,29 @@ public class PostRequestServices : IPostRequestService
         try
         {
             var postsRequests = await _postRequestRepository.GetAllWithAsync();
-            var activePostRequests = postsRequests.Where(pr => pr.Status != RequestStatuses.Unactived);
-            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(activePostRequests);
-            return postRequestViewModel;
+            var activePostRequests = postsRequests.Where(pr => pr.Status != RequestStatuses.Unactived).ToList();
+            var postRequestViewModels = _mapper.Map<List<PostRequestViewModel>>(activePostRequests);
+
+            //foreach (var postRequestViewModel in postRequestViewModels)
+            //{
+            //    var applies = _applyRepository.GetAll()
+            //        .Where(a => a.PostId == postRequestViewModel.PostId)
+            //        .ToList();
+
+            //    postRequestViewModel.Applies = _mapper.Map<List<ApplyViewModel>>(applies);
+            //}
+
+            foreach (var postRequestViewModel in postRequestViewModels)
+            {
+                var applies = await _applyRepository.GetAllWithIncludeAsync(
+                    a => a.PostId == postRequestViewModel.PostId,
+                    a => a.Tutor
+                );
+
+                var applyViewModels = _mapper.Map<List<ApplyViewModel>>(applies);
+            }
+
+            return postRequestViewModels;
         }
         catch (Exception ex)
         {
@@ -51,7 +73,7 @@ public class PostRequestServices : IPostRequestService
             newPostRequest.PostId = Guid.NewGuid();
             newPostRequest.CreatedBy = userId;
             newPostRequest.CreatedByUsername = fullnameClaim.Value;
-            
+
             await _postRequestRepository.AddSingleWithAsync(newPostRequest);
             await _postRequestRepository.SaveChangesAsync();
 
@@ -72,17 +94,17 @@ public class PostRequestServices : IPostRequestService
             {
                 throw new ArgumentException("PostRequest not found with this ID");
             }
-    
+
             var userIdClaim = user.FindFirst("UserId");
             if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId) || existedPostRequest.CreatedBy != userId)
             {
                 throw new UnauthorizedAccessException("User does not have permission to update this PostRequest.");
             }
-    
+
             _mapper.Map(updatedPost, existedPostRequest);
             await _postRequestRepository.UpdateWithAsync(existedPostRequest);
             await _postRequestRepository.SaveChangesAsync();
-    
+
             return _mapper.Map<AddPostRequestViewModel>(existedPostRequest);
         }
         catch (Exception e)
@@ -96,7 +118,7 @@ public class PostRequestServices : IPostRequestService
         try
         {
             var postRequests = await _postRequestRepository.GetAllWithAsync();
-            var postRequestViewModel = _mapper.Map < List<PostRequestViewModel>>(postRequests);
+            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(postRequests);
             var userPostRequest = postRequestViewModel
                 .Where(p => p.CreatedBy == userId)
                 .ToList();
@@ -118,9 +140,9 @@ public class PostRequestServices : IPostRequestService
                 throw new ArgumentException("User ID claim not found or invalid.");
             }
 
-            var postRequests= await _postRequestRepository.GetAllWithAsync();
-            var postRequestViewModel= _mapper.Map<List<PostRequestViewModel>>(postRequests);
-            var userPostRequest = postRequestViewModel.Where(p => p.CreatedBy == userId) .ToList();
+            var postRequests = await _postRequestRepository.GetAllWithAsync();
+            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(postRequests);
+            var userPostRequest = postRequestViewModel.Where(p => p.CreatedBy == userId).ToList();
 
             return userPostRequest;
         }
@@ -141,7 +163,13 @@ public class PostRequestServices : IPostRequestService
                 throw new Exception($"Post request with ID {id} not found.");
             }
             var postRequestModel = _mapper.Map<PostRequestViewModel>(postRequest);
-           
+            var applies = await _applyRepository.GetAllWithIncludeAsync(
+                a => a.PostId == id,
+                a => a.Tutor 
+            );
+
+            postRequestModel.Applies = _mapper.Map<List<ApplyViewModel>>(applies);
+
             return postRequestModel;
         }
         catch (Exception e)

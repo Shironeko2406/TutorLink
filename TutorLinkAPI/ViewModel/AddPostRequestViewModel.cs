@@ -13,4 +13,5 @@ public class AddPostRequestViewModel
     public RequestStatuses Status { get; set; }
     public string RequestSkill { get; set; }
     public DateTime CreatedDate { get; set; }
+    public ICollection<Apply>? Applies { get; set; }
 }
