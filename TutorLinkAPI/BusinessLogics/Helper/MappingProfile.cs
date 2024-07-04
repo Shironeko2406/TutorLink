@@ -50,7 +50,9 @@ public class MappingProfile : Profile
             .ReverseMap();
         
         //PostRequest
-        CreateMap<PostRequestViewModel, PostRequest>().ReverseMap();
+        CreateMap<PostRequestViewModel, PostRequest>()
+            .ForMember(dest => dest.Applies, opt => opt.Ignore())
+            .ReverseMap();
         CreateMap<AddPostRequestViewModel, PostRequest>()
             .ForMember(dest => dest.PostId, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedBy, opt => opt.Ignore())
@@ -66,7 +68,9 @@ public class MappingProfile : Profile
 
 
         // Apply
-        CreateMap<Apply, ApplyViewModel>().ReverseMap();
+        CreateMap<Apply, ApplyViewModel>()
+            .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.Tutor.Fullname))
+            .ReverseMap();
         CreateMap<AddApplyViewModel, Apply>()
             .ForMember(dest => dest.PostId, opt => opt.MapFrom(src => src.PostId))
             .ForMember(dest => dest.TutorId, opt => opt.MapFrom(src => src.TutorId))
