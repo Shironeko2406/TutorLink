@@ -41,9 +41,16 @@ public class PostRequestServices : IPostRequestService
             {
                 throw new ArgumentException("User ID claim not found or invalid.");
             }
+
+            var fullnameClaim = user.FindFirst("Fullname");
+            if (fullnameClaim == null)
+            {
+                throw new ArgumentException("Fullname claim not found.");
+            }
             var newPostRequest = _mapper.Map<PostRequest>(newPost);
             newPostRequest.PostId = Guid.NewGuid();
             newPostRequest.CreatedBy = userId;
+            newPostRequest.CreatedByUsername = fullnameClaim.Value;
             
             await _postRequestRepository.AddSingleWithAsync(newPostRequest);
             await _postRequestRepository.SaveChangesAsync();

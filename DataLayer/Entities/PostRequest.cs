@@ -12,6 +12,7 @@ public class PostRequest
     public RequestStatuses Status { get; set; }
     public string RequestSkill { get; set; }
     public Guid CreatedBy { get; set; }
+    public string? CreatedByUsername { get; set; }
     public DateTime CreatedDate { get; set; }
     
     public virtual ICollection<Apply>? Applies { get; set; }
