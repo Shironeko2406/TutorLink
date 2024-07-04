@@ -36,6 +36,7 @@ namespace TutorLinkAPI.BusinessLogics.Services
                 new Claim("Username", user.Username),
                 new Claim("Email", user.Email),
                 new Claim("Role", user.RoleId.ToString()),
+                new Claim("Fullname", user.Fullname)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
