@@ -23,6 +23,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
             .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.AvatarUrl))
             .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.RoleId))
             .ForAllOtherMembers(opt => opt.Ignore());
 
@@ -32,6 +33,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Email, opt => opt.Condition(src => src.Email != null && src.Email != "string"))
             .ForMember(dest => dest.Phone, opt => opt.Condition(src => src.Phone != null && src.Phone != "string"))
             .ForMember(dest => dest.Address, opt => opt.Condition(src => src.Address != null && src.Address != "string"))
+            .ForMember(dest => dest.AvatarUrl, opt => opt.Condition(src => src.AvatarUrl != null && src.AvatarUrl != "string"))
             .ReverseMap();
 
         //Account
