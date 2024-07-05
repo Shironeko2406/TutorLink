@@ -18,5 +18,5 @@ public class PostRequestViewModel
     public string? AvatarUrl { get; set; }
     public DateTime CreatedDate { get; set; }
     
-    public virtual ICollection<ApplyViewModel> Applies { get; set; }
+    public virtual ICollection<ApplyViewModel>? Applies { get; set; }
 }
