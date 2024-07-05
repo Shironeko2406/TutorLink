@@ -64,7 +64,7 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.PreferredTime, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender != 0 ? src.Gender : default(RequestGender)))  
             .ForMember(dest => dest.Mode, opt => opt.MapFrom(src => src.Mode != 0 ? src.Mode : default(RequestMode)))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status != 0 ? src.Status : default(RequestStatuses)))
+            .ForMember(dest => dest.Status, opt => opt.Ignore())
             .ForMember(dest => dest.RequestSkill, opt => opt.Condition((src, dest, srcMember) => srcMember != "string"))
             .ReverseMap();
 

@@ -1,3 +1,4 @@
+using DataLayer.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
@@ -25,6 +26,22 @@ public class PostRequestController : ControllerBase
         if (postRequests == null)
         {
             return BadRequest("Failed to retrieve post requests list.");
+        }
+
+        return Ok(postRequests);
+    }
+    #endregion
+
+    #region Get All Pending Post Requests
+    [HttpGet]
+    [Authorize(Policy = "AdminOrStaff")]
+    [Route("pending-post-requests")]
+    public async Task<IActionResult> GetAllPendingPostRequests()
+    {
+        var postRequests = await _postRequestService.GetAllPendingPostRequests();
+        if (postRequests == null)
+        {
+            return BadRequest("Failed to retrieve pending post requests list.");
         }
 
         return Ok(postRequests);
@@ -105,7 +122,24 @@ public class PostRequestController : ControllerBase
         return Ok("Updated post request success");
     }
     #endregion
-    
+
+    #region Update Post Request Status
+    [Authorize(Policy = "AdminOrStaff")]
+    [HttpPut]
+    [Route("update-post-request-status/{id}")]
+    public async Task<IActionResult> UpdatePostRequestStatus(Guid id, [FromBody] RequestStatuses newStatus)
+    {
+        var result = await _postRequestService.UpdatePostRequestStatus(id, newStatus, User);
+
+        if (!result.Success)
+        {
+            return BadRequest(new { Error = result.ErrorMessage });
+        }
+
+        return Ok("Post request status updated successfully.");
+    }
+    #endregion
+
     #region Delete Post Request By PostId
     [HttpDelete]
     [Route("post-request-postId/{id}")]

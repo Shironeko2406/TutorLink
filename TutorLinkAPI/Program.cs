@@ -74,7 +74,15 @@ namespace TutorLinkAPI
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOrStaff", policy =>
+                    policy.RequireAssertion(context =>
+                    {
+                        var roleClaim = context.User.FindFirst("Role");
+                        return roleClaim != null && (roleClaim.Value == "1" || roleClaim.Value == "2");
+                    }));
+            });
 
             builder.Services.AddDbContext<TutorDbContext>(options =>
             {

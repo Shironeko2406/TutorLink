@@ -4,7 +4,7 @@ using DataLayer.DAL.Repositories;
 using DataLayer.Entities;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
-
+#pragma warning disable CS8603
 namespace TutorLinkAPI.BusinessLogics.Services;
 
 public class PostRequestServices : IPostRequestService
@@ -73,6 +73,7 @@ public class PostRequestServices : IPostRequestService
             newPostRequest.PostId = Guid.NewGuid();
             newPostRequest.CreatedBy = userId;
             newPostRequest.CreatedByUsername = fullnameClaim.Value;
+            newPostRequest.Status= RequestStatuses.Pending;
 
             await _postRequestRepository.AddSingleWithAsync(newPostRequest);
             await _postRequestRepository.SaveChangesAsync();
@@ -117,12 +118,22 @@ public class PostRequestServices : IPostRequestService
     {
         try
         {
-            var postRequests = await _postRequestRepository.GetAllWithAsync();
-            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(postRequests);
-            var userPostRequest = postRequestViewModel
-                .Where(p => p.CreatedBy == userId)
-                .ToList();
-            return userPostRequest;
+            var postRequests = await _postRequestRepository.GetAllWithIncludeAsync(
+                p => p.CreatedBy == userId,
+                p => p.Applies
+            );
+            var postRequestViewModels = _mapper.Map<List<PostRequestViewModel>>(postRequests);
+            foreach (var postRequestViewModel in postRequestViewModels)
+            {
+                var applies = await _applyRepository.GetAllWithIncludeAsync(
+                    a => a.PostId == postRequestViewModel.PostId,
+                    a => a.Tutor
+                );
+
+                postRequestViewModel.Applies = _mapper.Map<List<ApplyViewModel>>(applies);
+            }
+
+            return postRequestViewModels;
         }
         catch (Exception e)
         {
@@ -140,11 +151,22 @@ public class PostRequestServices : IPostRequestService
                 throw new ArgumentException("User ID claim not found or invalid.");
             }
 
-            var postRequests = await _postRequestRepository.GetAllWithAsync();
-            var postRequestViewModel = _mapper.Map<List<PostRequestViewModel>>(postRequests);
-            var userPostRequest = postRequestViewModel.Where(p => p.CreatedBy == userId).ToList();
+            var postRequests = await _postRequestRepository.GetAllWithIncludeAsync(
+                p => p.CreatedBy == userId,
+                p => p.Applies
+            );
+            var postRequestViewModels = _mapper.Map<List<PostRequestViewModel>>(postRequests);
+            foreach (var postRequestViewModel in postRequestViewModels)
+            {
+                var applies = await _applyRepository.GetAllWithIncludeAsync(
+                    a => a.PostId == postRequestViewModel.PostId,
+                    a => a.Tutor
+                );
 
-            return userPostRequest;
+                postRequestViewModel.Applies = _mapper.Map<List<ApplyViewModel>>(applies);
+            }
+
+            return postRequestViewModels;
         }
         catch (Exception e)
         {
@@ -204,4 +226,38 @@ public class PostRequestServices : IPostRequestService
         }
     }
 
+    public async Task<OperationResult> UpdatePostRequestStatus(Guid postId, RequestStatuses newStatus, ClaimsPrincipal user)
+    {
+        var roleClaim = user.FindFirst("Role");
+        if (roleClaim == null || (roleClaim.Value != "1" && roleClaim.Value != "2"))
+        {
+            return new OperationResult { Success = false, ErrorMessage = "User does not have permission to update post requests." };
+        }
+
+        var postRequest = await _postRequestRepository.GetByIdAsync(postId);
+        if (postRequest == null)
+        {
+            return new OperationResult { Success = false, ErrorMessage = $"Post request with ID {postId} not found." };
+        }
+
+        postRequest.Status = newStatus;
+        await _postRequestRepository.UpdateWithAsync(postRequest);
+
+        return new OperationResult { Success = true };
+    }
+
+    public async Task<List<PostRequestViewModel>> GetAllPendingPostRequests()
+    {
+        var postRequests = await _postRequestRepository.GetAllWithAsync();
+        var pendingPostRequest = postRequests.Where(p => p.Status == RequestStatuses.Pending);
+        var postRequestViewModels = _mapper.Map<List<PostRequestViewModel>>(pendingPostRequest);
+
+        return postRequestViewModels;
+    }
+
+    public class OperationResult
+    {
+        public bool Success { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
 }
