@@ -3,6 +3,7 @@ using DataLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
+#pragma warning disable CS8601, CS8625
 
 namespace TutorLinkAPI.Controllers
 {
@@ -87,6 +88,40 @@ namespace TutorLinkAPI.Controllers
                 Success = true,
                 Message = "Logout successful",
                 Data = null
+            });
+        }
+        #endregion
+
+        #region Google Login
+        [HttpPost("login-google")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequestViewModel request)
+        {
+            if (string.IsNullOrWhiteSpace(request.IdToken))
+            {
+                return BadRequest(new APIResponseViewModel
+                {
+                    Success = false,
+                    Message = "Invalid Google login request",
+                    Data = null
+                });
+            }
+
+            var token = await _authService.GoogleLogin(request.IdToken);
+            if (token == null)
+            {
+                return Unauthorized(new APIResponseViewModel
+                {
+                    Success = false,
+                    Message = "Google login failed",
+                    Data = null
+                });
+            }
+
+            return Ok(new APIResponseViewModel
+            {
+                Success = true,
+                Message = "Google login successful",
+                Data = token
             });
         }
         #endregion

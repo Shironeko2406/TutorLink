@@ -9,5 +9,6 @@ namespace TutorLinkAPI.BusinessLogics.IServices
     {
         AccessTokenViewModel GenerateToken(IUser user);
         AccessTokenViewModel Login(string username, string password);
+        Task<AccessTokenViewModel> GoogleLogin(string idToken);
     }
 }

@@ -69,7 +69,7 @@ public class AccountServices : IAccountService
 
             await _accountRepository.AddSingleWithAsync(newAccount);
             await _accountRepository.SaveChangesAsync();
-            
+
             var accountViewModelResult = _mapper.Map<AccountViewModel>(newAccount);
             return accountViewModelResult;
         }
@@ -79,6 +79,30 @@ public class AccountServices : IAccountService
         }
     }
     #endregion
+
+    #region Add google account
+    public async Task<AccountGoogleViewModel> AddNewAccountGoogle(AccountGoogleViewModel accountViewModel)
+    {
+        try
+        {
+            var newAccount = _mapper.Map<Account>(accountViewModel);
+            newAccount.AccountId = Guid.NewGuid();
+            var accountRole = await _roleRepository.GetSingleWithAsync(a => a.RoleId == 4);
+            newAccount.RoleId = accountRole.RoleId;
+
+            await _accountRepository.AddSingleWithAsync(newAccount);
+            await _accountRepository.SaveChangesAsync();
+
+            var accountViewModelResult = _mapper.Map<AccountGoogleViewModel>(newAccount);
+            return accountViewModelResult;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("An error occurred while adding the account.", ex);
+        }
+    }
+    #endregion
+
     private string GetFullExceptionMessage(Exception ex)
     {
         if (ex == null) return string.Empty;
@@ -89,7 +113,7 @@ public class AccountServices : IAccountService
         }
         return message;
     }
-    
+
     #region View Account
     public IEnumerable<Account> GetAllAccounts()
     {
@@ -148,6 +172,14 @@ public class AccountServices : IAccountService
             _accountRepository.Delete(account.AccountId);
             _accountRepository.SaveChanges();
         }
+    }
+    #endregion
+
+    #region Get account by email
+    public async Task<Account> GetAccountByEmail(string email)
+    {
+        return await _accountRepository.GetSingleWithAsync(a => a.Email == email);
+
     }
     #endregion
 }

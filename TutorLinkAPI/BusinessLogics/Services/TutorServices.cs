@@ -142,6 +142,19 @@ public class TutorServices : ITutorService
     }
     #endregion
 
+    #region GetTutorByEmail
+    public async Task<TutorViewModel> GetTutorByEmail(string email)
+    {
+        var tutor = await _tutorRepository.GetSingleWithAsync(t => t.Email == email);
+        if (tutor == null)
+        {
+            throw new Exception("No Tutor found with this Email!");
+        }
+        var tutorViewModel= _mapper.Map<TutorViewModel>(tutor);
+        return tutorViewModel;
+    }
+    #endregion
+
     #region Using Entity
     public Tutor GetTutorEntityByUsername(string username)
     {
