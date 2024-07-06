@@ -39,6 +39,10 @@ public class MappingProfile : Profile
         //Account
         CreateMap<AddAccountViewModel, Account>().ReverseMap();
         CreateMap<AccountViewModel, Account>().ReverseMap();
+        CreateMap<Account, AccountGoogleViewModel>()
+             .ForMember(dest => dest.AccountId, opt => opt.MapFrom(src => src.AccountId));
+        CreateMap<AccountGoogleViewModel, Account>()
+            .ForMember(dest => dest.AccountId, opt => opt.MapFrom(src => src.AccountId));
 
         //Qualification
         CreateMap<QualificationViewModel, Qualification>().ReverseMap();

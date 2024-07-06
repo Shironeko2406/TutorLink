@@ -1,5 +1,7 @@
-﻿using DataLayer.Entities;
+﻿using AutoMapper;
+using DataLayer.Entities;
 using DataLayer.Interfaces;
+using Google.Apis.Auth;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -7,7 +9,7 @@ using System.Security.Claims;
 using System.Text;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.ViewModel;
-
+#pragma warning disable CS8601
 namespace TutorLinkAPI.BusinessLogics.Services
 {
     public class AuthServices : IAuthService
@@ -15,12 +17,14 @@ namespace TutorLinkAPI.BusinessLogics.Services
         private readonly IConfiguration _configuration;
         private readonly ITutorService _tutorService;
         private readonly IAccountService _accountService;
+        private readonly IMapper _mapper;
 
-        public AuthServices(IConfiguration configuration, ITutorService tutorService, IAccountService accountService)
+        public AuthServices(IConfiguration configuration, ITutorService tutorService, IAccountService accountService, IMapper mapper)
         {
             _configuration = configuration;
             _tutorService = tutorService;
             _accountService = accountService;
+            _mapper = mapper;
         }
 
         public AccessTokenViewModel GenerateToken(IUser user)
@@ -102,6 +106,45 @@ namespace TutorLinkAPI.BusinessLogics.Services
             {
                 throw new Exception(e.Message);
             }
+        }
+
+        public async Task<AccessTokenViewModel> GoogleLogin(string idToken)
+        {
+            GoogleJsonWebSignature.Payload payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
+            var email = payload.Email;
+            var name = payload.Name;
+
+            var account = await _accountService.GetAccountByEmail(email);
+            if (account == null)
+            {
+                var accountGoogleViewModel = new AccountGoogleViewModel
+                {
+                    AccountId = Guid.NewGuid(),
+                    Email = email,
+                    Fullname = name,
+                    RoleId = 4,
+                    Username = email,
+                    Password = "",
+                    Phone = "",
+                    Address = "",
+                    AvatarUrl = null,
+                    Gender = UserGenders.Other
+                };
+
+                account = _mapper.Map<Account>(await _accountService.AddNewAccountGoogle(accountGoogleViewModel));
+            }
+
+            var token = GenerateToken(account);
+
+            return new AccessTokenViewModel
+            {
+                UserId = account.AccountId,
+                Username = account.Username,
+                Email = account.Email,
+                RoleId = account.RoleId,
+                AccessTokenToken = token.AccessTokenToken,
+                ExpiredAt = token.ExpiredAt
+            };
         }
     }
 }

@@ -9,6 +9,8 @@ public interface ITutorService
 
     Task<TutorViewModel> GetTutorById(Guid tutorId);
 
+    Task<TutorViewModel> GetTutorByEmail(string email);
+
     Task<Guid> AddNewTutor(AddTutorViewModel addTutorViewModel);
 
     Task<UpdateTutorViewModel> UpdateTutorById(Guid tutorId, UpdateTutorViewModel tutorViewModel);

@@ -8,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using TutorLinkAPI.BusinessLogics.IServices;
 using TutorLinkAPI.BusinessLogics.Services;
 using System.Text;
+#pragma warning disable CS8601
 
 namespace TutorLinkAPI
 {
@@ -73,7 +74,14 @@ namespace TutorLinkAPI
                     ValidAudience = audience,
                     ClockSkew = TimeSpan.Zero
                 };
-            });
+            })
+             .AddGoogle(options =>
+             {
+                 IConfigurationSection googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
+                 options.ClientId = googleAuthNSection["ClientId"];
+                 options.ClientSecret = googleAuthNSection["ClientSecret"];
+                 options.CallbackPath = "/signin-google";
+             });
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("AdminOrStaff", policy =>
