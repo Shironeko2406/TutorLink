@@ -62,7 +62,7 @@ public class AccountController : Controller
             model.Email,
             model.Phone,
             model.Address,
-            model.Address,
+            model.AvatarUrl,
             model.Gender
             
         );
